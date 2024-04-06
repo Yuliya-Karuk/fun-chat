@@ -1,0 +1,13 @@
+:root {
+  --color-primary-bright: #0cc;
+  --color-input: #e5ffff;
+  --color-button: #2c4b55;
+  --color-hover: rgb(0 255 255 / 70%);
+  --color-font-light: #e5ffff;
+  --color-font-dark: #033;
+  --color-font-invalid: #ffc61b;
+  --color-background-black-transparent: rgb(0 0 0 / 5%);
+  --color-background-white-transparent: rgb(255 255 255 / 30%);
+  --color-shadow-dark: rgb(0 0 0 / 40%);
+  --color-shadow-light: rgb(255 255 255 / 40%);
+}

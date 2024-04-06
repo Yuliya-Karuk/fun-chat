@@ -1,0 +1,44 @@
+.btn {
+  @extend %transition;
+
+  @include font(2rem, 700, 1.25);
+
+  @include media-hover {
+    &:not([disabled]):hover {
+      box-shadow:
+        0 1px 2px 0 var(--color-hover),
+        1px 2px 4px 0 var(--color-hover),
+        1px 2px 4px 0 var(--color-hover),
+        2px 4px 8px 0 var(--color-hover);
+    }
+  }
+
+  @include media-tablet {
+    padding: 5px 10px;
+    font-size: 1.4rem;
+  }
+  padding: 10px 20px;
+  color: var(--color-font-light);
+  background-color: var(--color-button);
+  border-radius: 8px;
+
+  &:not([disabled]):active {
+    box-shadow: inset 0 2px 4px var(--color-hover);
+  }
+
+  &:disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  &_hidden {
+    display: none;
+  }
+
+  &_centered {
+    @include flex(center, center);
+    flex-wrap: wrap;
+    margin: 0 auto;
+  }
+}
