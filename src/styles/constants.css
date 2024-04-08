@@ -1,7 +1,11 @@
 :root {
+  --font-family: 'Krona One', sans-serif;
+  --second-family: 'Inter', sans-serif;
+  --color-bg-primary: #1e1e1e;
+  --color-black: #000;
   --color-primary-bright: #0cc;
   --color-input: #e5ffff;
-  --color-button: #2c4b55;
+  --color-button: #24786d;
   --color-hover: rgb(0 255 255 / 70%);
   --color-font-light: #e5ffff;
   --color-font-dark: #033;

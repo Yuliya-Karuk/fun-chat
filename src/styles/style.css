@@ -1,7 +1,8 @@
 @import 'normalize.css';
 @import 'reset.css';
 @import 'constants.css';
-@import 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Krona+One&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap';
 @import 'styles.scss';
 
 *,
@@ -12,10 +13,11 @@
 
 html {
   scroll-behavior: smooth;
-  font-family: Roboto, sans-serif;
+  font-family: Inter, sans-serif;
   font-size: 10px;
 }
 
 body {
   position: relative;
+  background: var(--color-bg-primary);
 }
