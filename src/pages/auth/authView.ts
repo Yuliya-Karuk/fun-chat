@@ -1,21 +1,21 @@
+import { AuthForm } from '../../components/authForm/authForm';
 import { BaseComponent } from '../../components/baseComponent';
-import { LoginForm } from '../../components/loginForm/loginForm';
 import { createElementWithProperties } from '../../utils/utils';
 import styles from './auth.module.scss';
 
 export class AuthView extends BaseComponent {
   public carsBlock: HTMLDivElement;
-  public loginForm: LoginForm;
+  public authForm: AuthForm;
 
   constructor() {
     super('div', [styles.auth]);
-    this.loginForm = new LoginForm();
+    this.authForm = new AuthForm();
   }
 
   public renderContent(): void {
     this.renderStaticContent();
-    this.loginForm.renderContent();
-    this.appendChildren([this.loginForm.getNode()]);
+    this.authForm.renderContent();
+    this.appendChildren([this.authForm.getNode()]);
   }
 
   public renderStaticContent(): void {

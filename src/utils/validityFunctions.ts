@@ -1,26 +1,33 @@
-export type ValidationFunction = (input: HTMLInputElement) => string;
+import { AuthInputs } from './constants';
 
-export function isInputTooShort(input: HTMLInputElement): string {
+export type ValidationFunction = (input: HTMLInputElement, inputName: string) => string;
+
+export function isInputTooShort(input: HTMLInputElement, inputName: string): string {
   let errorMessage = '';
-  if (!input.value || input.validity.tooShort) {
-    errorMessage += `Your Car Name should contain minimum 3 letters. `;
+  if (input.validity.tooShort) {
+    errorMessage += `Your ${inputName} should contain minimum ${inputName === 'name' ? AuthInputs.name.minlength : AuthInputs.password.minlength} letters. `;
   }
   return errorMessage;
 }
 
-export function isFirstLetterLowerCase(input: HTMLInputElement): string {
+export function isFirstLetterLowerCase(input: HTMLInputElement, inputName: string): string {
   let errorMessage = '';
-  if (!input.value || input.value[0].toUpperCase() !== input.value[0]) {
-    errorMessage += `Your Car Name should start with capital letter. `;
+  if (input.value && input.value[0].toUpperCase() !== input.value[0] && inputName === AuthInputs.name.id) {
+    errorMessage += `Your ${inputName} should start with capital letter. `;
   }
   return errorMessage;
 }
 
-export function isContainForbiddenLetters(input: HTMLInputElement): string {
+export function isContainForbiddenLetters(input: HTMLInputElement, inputName: string): string {
   let errorMessage = '';
-  if (!input.value.match('^[0-9a-zA-Z\\-\\ ]+$')) {
-    errorMessage += `Only English letters, numbers, space and hyphen are allowed.`;
+
+  if (!input.value.match(AuthInputs.name.pattern) && inputName === AuthInputs.name.id) {
+    errorMessage += `Only English letters and “-” are allowed.`;
   }
+  if (!input.value.match(AuthInputs.password.pattern) && inputName === AuthInputs.password.id) {
+    errorMessage += `Only English letters and numbers are allowed.`;
+  }
+
   return errorMessage;
 }
 

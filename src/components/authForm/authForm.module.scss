@@ -1,4 +1,4 @@
-.login {
+.auth-form {
   @include font(2rem, 600, 1.2);
   display: flex;
   flex-direction: column;
@@ -13,13 +13,13 @@
   box-shadow: 0 2px 4px 0 rgb(255 255 255 / 80%);
 }
 
-.login-title {
+.auth-title {
   @include font(3.8rem, 700, 1.2);
   margin-bottom: 40px;
   color: var(--color-black);
 }
 
-.login-input {
+.auth-input {
   @extend %transition;
 
   @include media-hover {
@@ -50,18 +50,18 @@
   }
 }
 
-.login-label {
+.auth-label {
   color: #24786d;
 }
 
-.login-error {
+.auth-error {
   @include font(1.5rem, 700, normal, 0.05rem);
   display: block;
   margin-bottom: 5px;
   color: var(--color-invalid);
 }
 
-.login-button {
+.auth-button {
   height: 50px;
   margin-top: 20px;
 }

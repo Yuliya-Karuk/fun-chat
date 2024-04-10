@@ -62,7 +62,7 @@ export function checkDOMElement<T extends Node>(
 }
 
 export function checkRoute(route: string): Routes {
-  if (route in Routes) {
+  if (Object.values(Routes).includes(route as Routes)) {
     return route as Routes;
   }
 
