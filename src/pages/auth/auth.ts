@@ -27,12 +27,17 @@ export class Auth {
     this.view.authForm.passwordInput.addEventListener('input', () =>
       this.validateLoginInput(this.view.authForm.passwordInput)
     );
-    this.view.authForm.authButton.addEventListener('click', () => eventBus.emit('auth'));
+    this.view.authForm.authButton.addEventListener('click', (e: Event) => this.handleSubmitAuth(e));
     document.addEventListener('keyup', (e: KeyboardEvent) => {
       if (e.code === 'Enter' && !this.view.authForm.authButton.disabled) {
-        eventBus.emit('auth');
+        this.handleSubmitAuth(e);
       }
     });
+  }
+
+  private handleSubmitAuth(e: Event): void {
+    e.preventDefault();
+    eventBus.emit('auth');
   }
 
   private validateLoginInput(input: HTMLInputElement): void {

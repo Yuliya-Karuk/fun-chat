@@ -1,5 +1,7 @@
+import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { AuthRequest } from '../model/auth';
+import { UsersActiveRequest, UsersInactiveRequest } from '../model/users';
 
 export class WebSocketHandler {
   public ws: WebSocket;
@@ -23,9 +25,25 @@ export class WebSocketHandler {
     const { data } = e;
     const response = JSON.parse(data);
 
-    if (response.payload.user.isLogined) {
+    if (response.type === ResponseTypes.USER_LOGIN && response.payload.user.isLogined) {
       eventBus.emit('goToChatPage', response);
     }
+
+    if (response.type === ResponseTypes.USER_ACTIVE) {
+      eventBus.emit('getActiveUsers', response);
+    }
+
+    if (response.type === ResponseTypes.USER_INACTIVE) {
+      eventBus.emit('getInactiveUsers', response);
+    }
+  }
+
+  public getActiveUsers(message: UsersActiveRequest): void {
+    this.ws.send(JSON.stringify(message));
+  }
+
+  public getInactiveUsers(message: UsersInactiveRequest): void {
+    this.ws.send(JSON.stringify(message));
   }
 }
 

@@ -3,6 +3,8 @@
   --second-family: 'Inter', sans-serif;
   --color-bg-primary: #1e1e1e;
   --color-black: #000;
+  --color-font-light-primary: #fff;
+  --color-font-light-secondary: rgb(255 255 255 / 60%);
   --color-primary-bright: #0cc;
   --color-input: #e5ffff;
   --color-button: #24786d;

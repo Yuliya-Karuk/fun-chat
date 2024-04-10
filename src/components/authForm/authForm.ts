@@ -7,13 +7,12 @@ import styles from './authForm.module.scss';
 export class AuthForm extends BaseComponent {
   public nameInput: HTMLInputElement;
   public passwordInput: HTMLInputElement;
-  public element: HTMLFormElement;
   public nameError: HTMLSpanElement;
   public passwordError: HTMLSpanElement;
   public authButton: HTMLButtonElement;
 
   constructor() {
-    super('div', [styles.authForm], { novalidate: 'novalidate', method: '' });
+    super('form', [styles.authForm], { novalidate: 'novalidate', method: '' });
   }
 
   public renderContent(): void {

@@ -1,0 +1,31 @@
+.contact {
+  @include flex(flex-start, center);
+  column-gap: 10px;
+  width: 100%;
+  height: 50px;
+  padding: 5px 10px;
+}
+
+.contact-icon {
+  width: 40px;
+  height: 40px;
+  background-color: rgb(255 255 255 / 20%);
+  border-radius: 50%;
+
+  &_true {
+    outline: 2px solid green;
+  }
+}
+
+.contact-login {
+  @include font(1.6rem, 700, 1.05);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contact-messages {
+  @include font(2.2rem, 700, 1.05);
+  margin-left: auto;
+  padding: 5px;
+  background-color: green;
+}

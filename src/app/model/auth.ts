@@ -11,7 +11,7 @@ export type UserAuthResponse = Pick<UserAuthData, 'login' | 'isLogined'>;
 
 export interface AuthRequest {
   id: string;
-  type: ResponseTypes.USER_LOGIN;
+  type: ResponseTypes;
   payload: {
     user: UserAuthRequest;
   };
@@ -19,7 +19,7 @@ export interface AuthRequest {
 
 export interface AuthResponse {
   id: string;
-  type: ResponseTypes.USER_LOGIN;
+  type: ResponseTypes;
   payload: {
     user: UserAuthResponse;
   };

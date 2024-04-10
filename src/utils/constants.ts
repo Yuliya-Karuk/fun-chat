@@ -21,3 +21,13 @@ export const AuthInputs: Record<Inputs, DomElementAttribute> = {
     autocomplete: 'off',
   },
 };
+
+export const SearchInput = {
+  id: 'search',
+  type: 'text',
+  name: 'search',
+  required: 'required',
+  minlength: '3',
+  placeholder: 'Search',
+  autocomplete: 'off',
+};

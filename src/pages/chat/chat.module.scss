@@ -1,3 +1,18 @@
 .chat {
-  background: var(--color-font-light);
+  background: #1c1d22;
+}
+
+.contacts-container {
+  @include flex(center, center, column);
+  row-gap: 10px;
+  width: 25%;
+}
+
+.contacts {
+  @include flex(center, center, column);
+  row-gap: 5px;
+}
+
+.chatArea {
+  width: 75%;
 }
