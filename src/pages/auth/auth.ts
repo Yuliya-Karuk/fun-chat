@@ -28,6 +28,11 @@ export class Auth {
       this.validateLoginInput(this.view.authForm.passwordInput)
     );
     this.view.authForm.authButton.addEventListener('click', () => eventBus.emit('auth'));
+    document.addEventListener('keyup', (e: KeyboardEvent) => {
+      if (e.code === 'Enter' && !this.view.authForm.authButton.disabled) {
+        eventBus.emit('auth');
+      }
+    });
   }
 
   private validateLoginInput(input: HTMLInputElement): void {
