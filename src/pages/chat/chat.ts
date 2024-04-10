@@ -1,19 +1,25 @@
-import { AuthData } from '../../app/model/auth';
+import { AuthResponse } from '../../app/model/auth';
+import { eventBus } from '../../utils/eventBus';
 import { ChatView } from './chatView';
 
 export class Chat {
   public view: ChatView;
-  private data: AuthData;
+  private data: AuthResponse;
 
-  constructor(data: AuthData) {
+  constructor() {
     this.view = new ChatView();
-    this.data = data;
-    console.log(data);
 
+    eventBus.subscribe('goToChatPage', (data: AuthResponse) => this.setChatData(data));
     this.renderStaticParts();
   }
 
   private renderStaticParts(): void {
     this.view.renderContent();
+  }
+
+  private setChatData(data: AuthResponse): void {
+    this.data = data;
+    console.log(this.data);
+    this.view.setUserName(this.data.payload.user.login);
   }
 }

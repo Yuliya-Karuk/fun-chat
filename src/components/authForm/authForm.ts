@@ -1,4 +1,4 @@
-import { UserAuthData } from '../../types/interfaces';
+import { UserAuthRequest } from '../../app/model/auth';
 import { AuthInputs } from '../../utils/constants';
 import { createElementWithProperties } from '../../utils/utils';
 import { BaseComponent } from '../baseComponent';
@@ -59,7 +59,7 @@ export class AuthForm extends BaseComponent {
     }
   }
 
-  public getInputsValues(): UserAuthData {
+  public getInputsValues(): UserAuthRequest {
     const login = String(this.nameInput.value);
     const password = String(this.passwordInput.value);
     return { login, password };

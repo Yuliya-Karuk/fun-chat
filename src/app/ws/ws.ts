@@ -1,5 +1,5 @@
 import { eventBus } from '../../utils/eventBus';
-import { AuthData } from '../model/auth';
+import { AuthRequest } from '../model/auth';
 
 export class WebSocketHandler {
   public ws: WebSocket;
@@ -15,7 +15,7 @@ export class WebSocketHandler {
     this.ws.addEventListener('message', (e: MessageEvent) => this.handleMessage(e));
   }
 
-  public sendAuthMessage(message: AuthData): void {
+  public sendAuthMessage(message: AuthRequest): void {
     this.ws.send(JSON.stringify(message));
   }
 
@@ -24,7 +24,7 @@ export class WebSocketHandler {
     const response = JSON.parse(data);
 
     if (response.payload.user.isLogined) {
-      eventBus.emit('goToChatPage', data);
+      eventBus.emit('goToChatPage', response);
     }
   }
 }

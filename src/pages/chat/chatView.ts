@@ -1,16 +1,22 @@
 import { BaseComponent } from '../../components/baseComponent';
-import { createElementWithProperties } from '../../utils/utils';
+import { Header } from '../../components/header/header';
 import styles from './chat.module.scss';
 
 export class ChatView extends BaseComponent {
   public carsBlock: HTMLDivElement;
+  private header: Header;
 
   constructor() {
     super('div', [styles.chat]);
+
+    this.header = new Header();
   }
 
   public renderContent(): void {
-    const pageName = createElementWithProperties('h2', [styles.heading], undefined, [{ innerText: 'Chat' }]);
-    this.appendChildren([pageName]);
+    this.appendChildren([this.header.getNode()]);
+  }
+
+  public setUserName(userName: string): void {
+    this.header.setUserName(userName);
   }
 }
