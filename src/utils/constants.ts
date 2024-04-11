@@ -31,3 +31,10 @@ export const SearchInput = {
   placeholder: 'Search',
   autocomplete: 'off',
 };
+
+export const AboutParagraphs = {
+  0: 'Welcome to Fun Chat',
+  1: 'What could be better than chatting with your friends using a chat app?',
+  2: 'But what if the service owner deletes your messages? Or, on the contrary, they can store your chat history without your consent!',
+  3: 'Fun Chat is a simple, fast and secure messaging app that can be used on multiple devices simultaneously.',
+};

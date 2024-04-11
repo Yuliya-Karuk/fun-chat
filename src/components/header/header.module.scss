@@ -31,3 +31,9 @@
   margin-right: auto;
   text-transform: uppercase;
 }
+
+.header-button {
+  &_hidden {
+    display: none;
+  }
+}

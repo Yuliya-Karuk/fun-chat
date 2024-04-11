@@ -28,9 +28,11 @@ export class Auth {
     this.view.authForm.passwordInput.addEventListener('input', () =>
       this.validateLoginInput(this.view.authForm.passwordInput)
     );
-    this.view.authForm.authButton.addEventListener('click', (e: Event) => this.handleSubmitAuth(e));
+
+    this.view.authForm.submitButton.addEventListener('click', (e: Event) => this.handleSubmitAuth(e));
+
     document.addEventListener('keyup', (e: KeyboardEvent) => {
-      if (e.code === 'Enter' && !this.view.authForm.authButton.disabled) {
+      if (e.code === 'Enter' && !this.view.authForm.submitButton.disabled) {
         this.handleSubmitAuth(e);
       }
     });
@@ -50,7 +52,7 @@ export class Auth {
       errorSpan.textContent += validationFunctions[i](input, inputName);
     }
 
-    this.view.authForm.setAuthButton();
+    this.view.authForm.setSubmitButton();
   }
 
   private handleAuthorization(): void {

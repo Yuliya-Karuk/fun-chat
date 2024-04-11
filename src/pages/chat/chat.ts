@@ -3,7 +3,6 @@ import { UsersActiveResponse, UsersInactiveResponse } from '../../app/model/user
 import { WS } from '../../app/ws/ws';
 import { Contact } from '../../components/contact/contact';
 import { router } from '../../router/router';
-import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { checkEventTarget } from '../../utils/utils';
@@ -23,20 +22,15 @@ export class Chat {
     eventBus.subscribe('getInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
 
     this.renderStaticParts();
-    this.checkWasLostConnection();
     this.bindListeners();
+  }
+
+  public setLinks(isLoginedUser: boolean): void {
+    this.view.setHeaderLinks(isLoginedUser);
   }
 
   private renderStaticParts(): void {
     this.view.renderContent();
-  }
-
-  private checkWasLostConnection(): void {
-    const loginedUser = StorageService.getUserData();
-
-    if (loginedUser) {
-      WS.sendAuthMessage(loginedUser);
-    }
   }
 
   private bindListeners(): void {

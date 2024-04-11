@@ -12,4 +12,8 @@ export class About {
   private renderStaticParts(): void {
     this.view.renderContent();
   }
+
+  public setLinks(isLoginedUser: boolean): void {
+    this.view.setHeaderLinks(isLoginedUser);
+  }
 }

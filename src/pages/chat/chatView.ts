@@ -3,12 +3,13 @@ import { Footer } from '../../components/footer/footer';
 import { Header } from '../../components/header/header';
 import { Main } from '../../components/main/main';
 import { SearchForm } from '../../components/searchForm/searchForm';
+import { PagesNames } from '../../types/enums';
 import { createElementWithProperties } from '../../utils/utils';
 import styles from './chat.module.scss';
 
 export class ChatView extends BaseComponent {
   public carsBlock: HTMLDivElement;
-  public header: Header = new Header();
+  public header: Header = new Header(PagesNames.Chat);
   private footer: Footer = new Footer();
   private main: Main = new Main();
   private searchForm: SearchForm = new SearchForm();
@@ -36,5 +37,9 @@ export class ChatView extends BaseComponent {
 
   public setUserName(userName: string): void {
     this.header.setUserName(userName);
+  }
+
+  public setHeaderLinks(isLoginedUser: boolean): void {
+    this.header.setLinks(isLoginedUser);
   }
 }

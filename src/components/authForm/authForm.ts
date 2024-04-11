@@ -1,4 +1,5 @@
 import { UserAuthRequest } from '../../app/model/auth';
+import { Routes } from '../../router/router.types';
 import { AuthInputs } from '../../utils/constants';
 import { createElementWithProperties } from '../../utils/utils';
 import { BaseComponent } from '../baseComponent';
@@ -9,13 +10,16 @@ export class AuthForm extends BaseComponent {
   public passwordInput: HTMLInputElement;
   public nameError: HTMLSpanElement;
   public passwordError: HTMLSpanElement;
-  public authButton: HTMLButtonElement;
+  public aboutLink: HTMLAnchorElement;
+  public submitButton: HTMLButtonElement;
 
   constructor() {
     super('form', [styles.authForm], { novalidate: 'novalidate', method: '' });
+
+    this.renderContent();
   }
 
-  public renderContent(): void {
+  private renderContent(): void {
     this.nameInput = createElementWithProperties('input', [styles.authInput], AuthInputs.name);
     this.passwordInput = createElementWithProperties('input', [styles.authInput], AuthInputs.password);
 
@@ -31,13 +35,6 @@ export class AuthForm extends BaseComponent {
 
     const title = createElementWithProperties('h2', [styles.authTitle], undefined, [{ innerText: 'Authorization' }]);
 
-    this.authButton = createElementWithProperties(
-      'button',
-      ['btn', styles.authButton],
-      { type: 'submit', disabled: 'disabled' },
-      [{ innerText: 'Log in' }]
-    );
-
     this.appendChildren([
       title,
       nameLabel,
@@ -46,15 +43,35 @@ export class AuthForm extends BaseComponent {
       surnameLabel,
       this.passwordInput,
       this.passwordError,
-      this.authButton,
+      this.renderButtons(),
     ]);
   }
 
-  public setAuthButton(): void {
+  private renderButtons(): HTMLDivElement {
+    this.submitButton = createElementWithProperties(
+      'button',
+      ['btn', styles.authButton],
+      { type: 'submit', disabled: 'disabled' },
+      [{ innerText: 'Log in' }]
+    );
+
+    this.aboutLink = createElementWithProperties('a', ['btn', styles.authButton], { href: Routes.About }, [
+      { innerText: 'About' },
+    ]);
+
+    const buttonsContainer = createElementWithProperties('div', [styles.authButtons], undefined, undefined, [
+      this.aboutLink,
+      this.submitButton,
+    ]);
+
+    return buttonsContainer;
+  }
+
+  public setSubmitButton(): void {
     if (this.nameInput.checkValidity() && this.passwordInput.checkValidity()) {
-      this.authButton.removeAttribute('disabled');
+      this.submitButton.removeAttribute('disabled');
     } else {
-      this.authButton.setAttribute('disabled', 'disabled');
+      this.submitButton.setAttribute('disabled', 'disabled');
     }
   }
 

@@ -1,9 +1,11 @@
-import { AuthResponse } from '../app/model/auth';
+import { AuthRequest, AuthResponse } from '../app/model/auth';
+import { WS } from '../app/ws/ws';
 import { About } from '../pages/about/about';
 import { Auth } from '../pages/auth/auth';
 import { Chat } from '../pages/chat/chat';
 import { router } from '../router/router';
 import { Routes } from '../router/router.types';
+import { StorageService } from '../services/storage.service';
 import { eventBus } from '../utils/eventBus';
 
 export class AppController {
@@ -12,6 +14,7 @@ export class AppController {
   private auth: Auth;
   private about: About;
   private chat: Chat;
+  private loginedUser: AuthRequest | null;
 
   constructor(body: HTMLElement) {
     this.body = body;
@@ -19,25 +22,31 @@ export class AppController {
     this.about = new About();
     this.chat = new Chat();
 
+    this.checkAuthorizedUser();
+
     eventBus.subscribe('authorizeUser', (data: AuthResponse) => this.handleAuthorization(data));
   }
 
   public async setPage(location: Routes): Promise<void> {
     this.body.replaceChildren();
 
-    switch (location) {
-      case Routes.Auth:
-        this.page = this.auth;
-        break;
-      case Routes.About:
-        this.page = this.about;
-        break;
-      default:
-        this.page = this.chat;
+    if (location === Routes.Auth && !this.loginedUser) {
+      this.page = this.auth;
+    } else if (location === Routes.About) {
+      this.page = this.about;
+      this.page.setLinks(Boolean(this.loginedUser));
+    } else {
+      this.page = this.chat;
+      this.page.setLinks(Boolean(this.loginedUser));
+      WS.sendAuthMessage(this.loginedUser);
     }
     // this.page.loadPage();
     console.log(this.page);
     this.body.append(this.page.view.getNode());
+  }
+
+  private checkAuthorizedUser(): void {
+    this.loginedUser = StorageService.getUserData();
   }
 
   private handleAuthorization(data: AuthResponse): void {
