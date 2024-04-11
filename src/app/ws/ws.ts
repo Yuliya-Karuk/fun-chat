@@ -13,12 +13,17 @@ export class WebSocketHandler {
   }
 
   private bindSocketListeners(): void {
-    this.ws.addEventListener('open', () => console.log('socket open'));
     this.ws.addEventListener('message', (e: MessageEvent) => this.handleMessage(e));
   }
 
   public sendAuthMessage(message: AuthRequest): void {
-    this.ws.send(JSON.stringify(message));
+    if (this.ws.readyState === 0) {
+      this.ws.addEventListener('open', () => {
+        this.ws.send(JSON.stringify(message));
+      });
+    } else {
+      this.ws.send(JSON.stringify(message));
+    }
   }
 
   public handleMessage(e: MessageEvent): void {
@@ -26,7 +31,7 @@ export class WebSocketHandler {
     const response = JSON.parse(data);
 
     if (response.type === ResponseTypes.USER_LOGIN && response.payload.user.isLogined) {
-      eventBus.emit('goToChatPage', response);
+      eventBus.emit('authorizeUser', response);
     }
 
     if (response.type === ResponseTypes.USER_ACTIVE) {

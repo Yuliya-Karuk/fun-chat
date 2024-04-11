@@ -2,8 +2,11 @@ import { AuthResponse, UserAuthResponse } from '../../app/model/auth';
 import { UsersActiveResponse, UsersInactiveResponse } from '../../app/model/users';
 import { WS } from '../../app/ws/ws';
 import { Contact } from '../../components/contact/contact';
+import { router } from '../../router/router';
+import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
+import { checkEventTarget } from '../../utils/utils';
 import { ChatView } from './chatView';
 
 export class Chat {
@@ -20,10 +23,25 @@ export class Chat {
     eventBus.subscribe('getInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
 
     this.renderStaticParts();
+    this.checkWasLostConnection();
+    this.bindListeners();
   }
 
   private renderStaticParts(): void {
     this.view.renderContent();
+  }
+
+  private checkWasLostConnection(): void {
+    const loginedUser = StorageService.getUserData();
+
+    if (loginedUser) {
+      WS.sendAuthMessage(loginedUser);
+    }
+  }
+
+  private bindListeners(): void {
+    this.view.header.logoutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e));
+    this.view.header.aboutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e));
   }
 
   private setChatData(userData: AuthResponse): void {
@@ -54,14 +72,12 @@ export class Chat {
     const { users } = activeUsersData.payload;
     this.activeUsers = [...users];
     this.renderContacts(this.activeUsers);
-    console.log(users);
   }
 
   private getInactiveUsers(inactiveUsersData: UsersActiveResponse): void {
     const { users } = inactiveUsersData.payload;
     this.inactiveUsers = [...users];
     this.renderContacts(this.inactiveUsers);
-    console.log(users);
   }
 
   private renderContacts(users: UserAuthResponse[]): void {
@@ -69,5 +85,11 @@ export class Chat {
       const user = new Contact(el);
       this.view.contacts.append(user.getNode());
     });
+  }
+
+  private handleHeaderNavigation(e: Event): void {
+    e.preventDefault();
+    const location = checkEventTarget(e.target).getAttribute('href') || '';
+    router.navigateTo(location);
   }
 }

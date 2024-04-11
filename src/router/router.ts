@@ -6,8 +6,7 @@ export class Router {
   private setPage: Callback<string>;
   public currentPage: Routes;
 
-  constructor(setPageContent: Callback<string>) {
-    this.setPage = setPageContent;
+  constructor() {
     window.onpopstate = (): void => {
       this.handleLocation();
     };
@@ -15,6 +14,7 @@ export class Router {
 
   public handleLocation(): void {
     const route = window.location.pathname;
+    console.log(route);
     this.currentPage = checkRoute(route);
 
     this.setPage(this.currentPage);
@@ -24,4 +24,10 @@ export class Router {
     window.history.pushState({}, '', location);
     this.setPage(location);
   }
+
+  public setCallback(setPageContent: Callback<string>): void {
+    this.setPage = setPageContent;
+  }
 }
+
+export const router = new Router();

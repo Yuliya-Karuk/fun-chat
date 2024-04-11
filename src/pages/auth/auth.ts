@@ -1,4 +1,5 @@
 import { WS } from '../../app/ws/ws';
+import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { isNotNullable } from '../../utils/utils';
@@ -63,5 +64,6 @@ export class Auth {
     };
 
     WS.sendAuthMessage(request);
+    StorageService.saveData(request);
   }
 }

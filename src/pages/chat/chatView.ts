@@ -8,7 +8,7 @@ import styles from './chat.module.scss';
 
 export class ChatView extends BaseComponent {
   public carsBlock: HTMLDivElement;
-  private header: Header = new Header();
+  public header: Header = new Header();
   private footer: Footer = new Footer();
   private main: Main = new Main();
   private searchForm: SearchForm = new SearchForm();
