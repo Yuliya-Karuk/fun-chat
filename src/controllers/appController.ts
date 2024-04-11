@@ -7,6 +7,7 @@ import { router } from '../router/router';
 import { Routes } from '../router/router.types';
 import { StorageService } from '../services/storage.service';
 import { eventBus } from '../utils/eventBus';
+import { isNotNullable } from '../utils/utils';
 
 export class AppController {
   private body: HTMLElement;
@@ -29,6 +30,7 @@ export class AppController {
 
   public async setPage(location: Routes): Promise<void> {
     this.body.replaceChildren();
+    this.checkAuthorizedUser();
 
     if (location === Routes.Auth && !this.loginedUser) {
       this.page = this.auth;
@@ -38,10 +40,9 @@ export class AppController {
     } else {
       this.page = this.chat;
       this.page.setLinks(Boolean(this.loginedUser));
-      WS.sendAuthMessage(this.loginedUser);
+      WS.sendAuthMessage(isNotNullable(this.loginedUser));
     }
     // this.page.loadPage();
-    console.log(this.page);
     this.body.append(this.page.view.getNode());
   }
 

@@ -14,7 +14,7 @@ export class Router {
 
   public handleLocation(): void {
     const route = window.location.pathname;
-    console.log(route);
+
     this.currentPage = checkRoute(route);
 
     this.setPage(this.currentPage);

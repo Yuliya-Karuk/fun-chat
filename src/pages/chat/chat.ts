@@ -3,6 +3,7 @@ import { UsersActiveResponse, UsersInactiveResponse } from '../../app/model/user
 import { WS } from '../../app/ws/ws';
 import { Contact } from '../../components/contact/contact';
 import { router } from '../../router/router';
+import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { checkEventTarget } from '../../utils/utils';
@@ -34,8 +35,8 @@ export class Chat {
   }
 
   private bindListeners(): void {
-    this.view.header.logoutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e));
-    this.view.header.aboutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e));
+    this.view.header.logoutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e, true));
+    this.view.header.aboutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e, false));
   }
 
   private setChatData(userData: AuthResponse): void {
@@ -81,8 +82,13 @@ export class Chat {
     });
   }
 
-  private handleHeaderNavigation(e: Event): void {
+  private handleHeaderNavigation(e: Event, needToLogout: boolean): void {
     e.preventDefault();
+
+    if (needToLogout) {
+      StorageService.removeData();
+    }
+
     const location = checkEventTarget(e.target).getAttribute('href') || '';
     router.navigateTo(location);
   }
