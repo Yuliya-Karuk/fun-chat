@@ -34,6 +34,10 @@ export class WebSocketHandler {
       eventBus.emit('authorizeUser', response);
     }
 
+    if (response.type === ResponseTypes.USER_LOGOUT) {
+      eventBus.emit('goToLoginPage', response);
+    }
+
     if (response.type === ResponseTypes.USER_ACTIVE) {
       eventBus.emit('getActiveUsers', response);
     }

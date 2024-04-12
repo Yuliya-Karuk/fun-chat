@@ -3,10 +3,11 @@ import { UsersActiveResponse, UsersInactiveResponse } from '../../app/model/user
 import { WS } from '../../app/ws/ws';
 import { Contact } from '../../components/contact/contact';
 import { router } from '../../router/router';
+import { Routes } from '../../router/router.types';
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
-import { checkEventTarget } from '../../utils/utils';
+import { checkEventTarget, isNotNullable } from '../../utils/utils';
 import { ChatView } from './chatView';
 
 export class Chat {
@@ -19,6 +20,7 @@ export class Chat {
     this.view = new ChatView();
 
     eventBus.subscribe('goToChatPage', (data: AuthResponse) => this.setChatData(data));
+    eventBus.subscribe('goToLoginPage', () => this.handleLogoutNavigation(Routes.Auth));
     eventBus.subscribe('getActiveUsers', (data: UsersActiveResponse) => this.getActiveUsers(data));
     eventBus.subscribe('getInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
 
@@ -35,8 +37,8 @@ export class Chat {
   }
 
   private bindListeners(): void {
-    this.view.header.logoutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e, true));
-    this.view.header.aboutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e, false));
+    this.view.header.logoutLink.addEventListener('click', (e: Event) => this.handleLogoutUser(e));
+    this.view.header.aboutLink.addEventListener('click', (e: Event) => this.handleAboutNavigation(e));
   }
 
   private setChatData(userData: AuthResponse): void {
@@ -58,6 +60,8 @@ export class Chat {
       type: ResponseTypes.USER_INACTIVE,
       payload: null,
     };
+
+    this.view.contacts.replaceChildren();
 
     WS.getActiveUsers(request);
     WS.getInactiveUsers(request2);
@@ -84,14 +88,26 @@ export class Chat {
     });
   }
 
-  private handleHeaderNavigation(e: Event, needToLogout: boolean): void {
+  private handleAboutNavigation(e: Event): void {
     e.preventDefault();
 
-    if (needToLogout) {
-      StorageService.removeData();
-    }
+    const location = checkEventTarget(e.target).getAttribute('href') || '';
+    router.navigateTo(location);
+  }
+
+  private handleLogoutUser(e: Event): void {
+    e.preventDefault();
+    const request = isNotNullable(StorageService.getUserData());
+    request.type = ResponseTypes.USER_LOGOUT;
+
+    WS.sendAuthMessage(request);
+    StorageService.removeData();
 
     const location = checkEventTarget(e.target).getAttribute('href') || '';
+    router.navigateTo(location);
+  }
+
+  private handleLogoutNavigation(location: Routes): void {
     router.navigateTo(location);
   }
 }
