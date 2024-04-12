@@ -5,7 +5,6 @@ import styles from './searchForm.module.scss';
 
 export class SearchForm extends BaseComponent {
   public searchInput: HTMLInputElement;
-  public searchIcon: HTMLSpanElement;
   public searchButton: HTMLButtonElement;
 
   constructor() {

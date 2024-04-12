@@ -20,6 +20,7 @@
 .contact-login {
   @include font(1.6rem, 700, 1.05);
   overflow: hidden;
+  color: var(--color-font-light-secondary);
   text-overflow: ellipsis;
 }
 

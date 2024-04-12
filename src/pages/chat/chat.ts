@@ -77,8 +77,10 @@ export class Chat {
 
   private renderContacts(users: UserAuthResponse[]): void {
     users.forEach(el => {
-      const user = new Contact(el);
-      this.view.contacts.append(user.getNode());
+      if (el.login !== this.userData.payload.user.login) {
+        const user = new Contact(el);
+        this.view.contacts.append(user.getNode());
+      }
     });
   }
 

@@ -32,6 +32,16 @@ export const SearchInput = {
   autocomplete: 'off',
 };
 
+export const MessageInput = {
+  id: 'message',
+  type: 'text',
+  name: 'message',
+  required: 'required',
+  minlength: '1',
+  placeholder: 'Message',
+  autocomplete: 'off',
+};
+
 export const AboutParagraphs = {
   0: 'Welcome to Fun Chat',
   1: 'What could be better than chatting with your friends using a chat app?',

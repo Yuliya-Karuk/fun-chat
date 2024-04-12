@@ -1,4 +1,5 @@
 import { BaseComponent } from '../../components/baseComponent';
+import { ChatArea } from '../../components/chatArea/chatArea';
 import { Footer } from '../../components/footer/footer';
 import { Header } from '../../components/header/header';
 import { Main } from '../../components/main/main';
@@ -13,6 +14,7 @@ export class ChatView extends BaseComponent {
   private footer: Footer = new Footer();
   private main: Main = new Main();
   private searchForm: SearchForm = new SearchForm();
+  public chatArea: ChatArea = new ChatArea();
   public contacts: HTMLDivElement;
 
   constructor() {
@@ -31,8 +33,8 @@ export class ChatView extends BaseComponent {
       this.searchForm.getNode(),
       this.contacts,
     ]);
-    const chatArea = createElementWithProperties('div', [styles.chatArea]);
-    this.main.appendChildren([contactsContainer, chatArea]);
+
+    this.main.appendChildren([contactsContainer, this.chatArea.getNode()]);
   }
 
   public setUserName(userName: string): void {
