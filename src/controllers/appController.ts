@@ -32,7 +32,7 @@ export class AppController {
     this.body.replaceChildren();
     this.checkAuthorizedUser();
 
-    if (location === Routes.Auth && !this.loginedUser) {
+    if ((location === Routes.Auth && !this.loginedUser) || (location === Routes.Chat && !this.loginedUser)) {
       this.page = this.auth;
     } else if (location === Routes.About) {
       this.page = this.about;
@@ -42,7 +42,7 @@ export class AppController {
       this.page.setLinks(Boolean(this.loginedUser));
       WS.sendAuthMessage(isNotNullable(this.loginedUser));
     }
-    // this.page.loadPage();
+
     this.body.append(this.page.view.getNode());
   }
 

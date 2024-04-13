@@ -15,6 +15,7 @@ export class Chat {
   private userData: AuthResponse;
   private activeUsers: UserAuthResponse[];
   private inactiveUsers: UserAuthResponse[];
+  private chosenUser: UserAuthResponse;
 
   constructor() {
     this.view = new ChatView();
@@ -23,6 +24,8 @@ export class Chat {
     eventBus.subscribe('goToLoginPage', () => this.handleLogoutNavigation(Routes.Auth));
     eventBus.subscribe('getActiveUsers', (data: UsersActiveResponse) => this.getActiveUsers(data));
     eventBus.subscribe('getInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
+    eventBus.subscribe('chooseUser', (data: UserAuthResponse) => this.setUser(data));
+    eventBus.subscribe('changeActivityUsers', () => this.getUsers());
 
     this.renderStaticParts();
     this.bindListeners();
@@ -39,6 +42,7 @@ export class Chat {
   private bindListeners(): void {
     this.view.header.logoutLink.addEventListener('click', (e: Event) => this.handleLogoutUser(e));
     this.view.header.aboutLink.addEventListener('click', (e: Event) => this.handleAboutNavigation(e));
+    this.view.chatArea.form.addEventListener('submit', (e: Event) => this.sendMessageToUser(e));
   }
 
   private setChatData(userData: AuthResponse): void {
@@ -109,5 +113,16 @@ export class Chat {
 
   private handleLogoutNavigation(location: Routes): void {
     router.navigateTo(location);
+  }
+
+  private setUser(data: UserAuthResponse): void {
+    this.chosenUser = data;
+    this.view.chatArea.setUser(data);
+  }
+
+  private sendMessageToUser(e: Event): void {
+    e.preventDefault();
+    const message = this.view.chatArea.getMessageInputValue();
+    console.log(message);
   }
 }

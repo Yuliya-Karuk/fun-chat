@@ -45,6 +45,10 @@ export class WebSocketHandler {
     if (response.type === ResponseTypes.USER_INACTIVE) {
       eventBus.emit('getInactiveUsers', response);
     }
+
+    if (response.type === ResponseTypes.USER_EXTERNAL_LOGIN || response.type === ResponseTypes.USER_EXTERNAL_LOGOUT) {
+      eventBus.emit('changeActivityUsers', response);
+    }
   }
 
   public getActiveUsers(message: UsersActiveRequest): void {

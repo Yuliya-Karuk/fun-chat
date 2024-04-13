@@ -1,4 +1,5 @@
 import { UserAuthResponse } from '../../app/model/auth';
+import { eventBus } from '../../utils/eventBus';
 import { createElementWithProperties } from '../../utils/utils';
 import { BaseComponent } from '../baseComponent';
 import styles from './contact.module.scss';
@@ -12,6 +13,7 @@ export class Contact extends BaseComponent {
     this.userData = userData;
 
     this.renderContent();
+    this.bindListeners();
   }
 
   private renderContent(): void {
@@ -25,5 +27,9 @@ export class Contact extends BaseComponent {
     const unreadMessages = createElementWithProperties('div', [styles.contactMessages]);
 
     this.appendChildren([userIcon, userLogin, unreadMessages]);
+  }
+
+  private bindListeners(): void {
+    this.node.addEventListener('click', () => eventBus.emit('chooseUser', this.userData));
   }
 }
