@@ -1,9 +1,10 @@
-import { AuthResponse, UserAuthResponse } from '../../app/model/auth';
+import { ContactController } from '../../app/controllers/contactController/contactController';
+import { AuthResponse, ContactAuthResponse, UserAuthResponse } from '../../app/model/auth';
 import { UsersActiveResponse, UsersInactiveResponse } from '../../app/model/users';
 import { WS } from '../../app/ws/ws';
-import { Contact } from '../../components/contact/contact';
 import { router } from '../../router/router';
 import { Routes } from '../../router/router.types';
+import { stateStorage } from '../../services/state.service';
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
@@ -13,8 +14,6 @@ import { ChatView } from './chatView';
 export class Chat {
   public view: ChatView;
   private userData: AuthResponse;
-  private activeUsers: UserAuthResponse[];
-  private inactiveUsers: UserAuthResponse[];
   private chosenUser: UserAuthResponse;
 
   constructor() {
@@ -25,7 +24,7 @@ export class Chat {
     eventBus.subscribe('getActiveUsers', (data: UsersActiveResponse) => this.getActiveUsers(data));
     eventBus.subscribe('getInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
     eventBus.subscribe('chooseUser', (data: UserAuthResponse) => this.setUser(data));
-    eventBus.subscribe('changeActivityUsers', () => this.getUsers());
+    eventBus.subscribe('changeActivityUsers', (data: ContactAuthResponse) => this.changeActivityUsers(data));
 
     this.renderStaticParts();
     this.bindListeners();
@@ -73,21 +72,21 @@ export class Chat {
 
   private getActiveUsers(activeUsersData: UsersActiveResponse): void {
     const { users } = activeUsersData.payload;
-    this.activeUsers = [...users];
-    this.renderContacts(this.activeUsers);
+    this.renderContacts(users);
   }
 
   private getInactiveUsers(inactiveUsersData: UsersActiveResponse): void {
     const { users } = inactiveUsersData.payload;
-    this.inactiveUsers = [...users];
-    this.renderContacts(this.inactiveUsers);
+    this.renderContacts(users);
   }
 
   private renderContacts(users: UserAuthResponse[]): void {
     users.forEach(el => {
       if (el.login !== this.userData.payload.user.login) {
-        const user = new Contact(el);
-        this.view.contacts.append(user.getNode());
+        const contact = new ContactController(el);
+
+        stateStorage.setOneUser(contact);
+        this.view.contacts.append(contact.view.getNode());
       }
     });
   }
@@ -113,6 +112,26 @@ export class Chat {
 
   private handleLogoutNavigation(location: Routes): void {
     router.navigateTo(location);
+  }
+
+  private changeActivityUsers(data: ContactAuthResponse): void {
+    let updatedUser;
+
+    if (stateStorage.checkUserIsExist(data.payload.user)) {
+      updatedUser = stateStorage.updateOneUser(data.payload.user);
+
+      updatedUser.updateUserVisibility();
+      this.view.contacts.removeChild(updatedUser.view.getNode());
+    } else {
+      updatedUser = new ContactController(data.payload.user);
+      stateStorage.setOneUser(updatedUser);
+    }
+
+    if (updatedUser.userData.isLogined) {
+      this.view.contacts.prepend(updatedUser.view.getNode());
+    } else {
+      this.view.contacts.append(updatedUser.view.getNode());
+    }
   }
 
   private setUser(data: UserAuthResponse): void {

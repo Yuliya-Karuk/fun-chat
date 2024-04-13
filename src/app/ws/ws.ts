@@ -47,6 +47,7 @@ export class WebSocketHandler {
     }
 
     if (response.type === ResponseTypes.USER_EXTERNAL_LOGIN || response.type === ResponseTypes.USER_EXTERNAL_LOGOUT) {
+      console.log(response);
       eventBus.emit('changeActivityUsers', response);
     }
   }

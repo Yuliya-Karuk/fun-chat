@@ -24,3 +24,11 @@ export interface AuthResponse {
     user: UserAuthResponse;
   };
 }
+
+export interface ContactAuthResponse {
+  id: null;
+  type: ResponseTypes;
+  payload: {
+    user: UserAuthResponse;
+  };
+}
