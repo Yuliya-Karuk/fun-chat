@@ -6,6 +6,7 @@ export enum ResponseTypes {
   'MSG_SEND' = 'MSG_SEND',
   'USER_EXTERNAL_LOGIN' = 'USER_EXTERNAL_LOGIN',
   'USER_EXTERNAL_LOGOUT' = 'USER_EXTERNAL_LOGOUT',
+  'ERROR' = 'ERROR',
 }
 
 export enum PagesNames {

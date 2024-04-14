@@ -1,3 +1,4 @@
+import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { AuthRequest } from '../model/auth';
@@ -29,8 +30,17 @@ export class WebSocketHandler {
   public handleMessage(e: MessageEvent): void {
     const { data } = e;
     const response = JSON.parse(data);
+    console.log(response);
 
-    if (response.type === ResponseTypes.USER_LOGIN && response.payload.user.isLogined) {
+    if (response.type === ResponseTypes.ERROR) {
+      eventBus.emit('authError', response.payload.error);
+    }
+
+    if (response.type === ResponseTypes.USER_LOGIN) {
+      if (!StorageService.isSavedUser()) {
+        eventBus.emit('saveUserData', response);
+      }
+
       eventBus.emit('authorizeUser', response);
     }
 
@@ -47,7 +57,6 @@ export class WebSocketHandler {
     }
 
     if (response.type === ResponseTypes.USER_EXTERNAL_LOGIN || response.type === ResponseTypes.USER_EXTERNAL_LOGOUT) {
-      console.log(response);
       eventBus.emit('changeActivityUsers', response);
     }
   }

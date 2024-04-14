@@ -1,5 +1,5 @@
 import { ContactController } from '../../app/controllers/contactController/contactController';
-import { AuthResponse, ContactAuthResponse, UserAuthResponse } from '../../app/model/auth';
+import { ContactAuthResponse, UserAuthRequest, UserAuthResponse } from '../../app/model/auth';
 import { UsersActiveResponse, UsersInactiveResponse } from '../../app/model/users';
 import { WS } from '../../app/ws/ws';
 import { router } from '../../router/router';
@@ -8,18 +8,18 @@ import { stateStorage } from '../../services/state.service';
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
-import { checkEventTarget, isNotNullable } from '../../utils/utils';
+import { checkEventTarget } from '../../utils/utils';
 import { ChatView } from './chatView';
 
 export class Chat {
   public view: ChatView;
-  private userData: AuthResponse;
+  private userData: UserAuthRequest;
   private chosenUser: UserAuthResponse;
 
   constructor() {
     this.view = new ChatView();
 
-    eventBus.subscribe('goToChatPage', (data: AuthResponse) => this.setChatData(data));
+    eventBus.subscribe('goToChatPage', (data: UserAuthRequest) => this.setChatData(data));
     eventBus.subscribe('goToLoginPage', () => this.handleLogoutNavigation(Routes.Auth));
     eventBus.subscribe('getActiveUsers', (data: UsersActiveResponse) => this.getActiveUsers(data));
     eventBus.subscribe('getInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
@@ -44,9 +44,9 @@ export class Chat {
     this.view.chatArea.form.addEventListener('submit', (e: Event) => this.sendMessageToUser(e));
   }
 
-  private setChatData(userData: AuthResponse): void {
+  private setChatData(userData: UserAuthRequest): void {
     this.userData = userData;
-    this.view.setUserName(this.userData.payload.user.login);
+    this.view.setUserName(this.userData.login);
 
     this.getUsers();
   }
@@ -82,7 +82,7 @@ export class Chat {
 
   private renderContacts(users: UserAuthResponse[]): void {
     users.forEach(el => {
-      if (el.login !== this.userData.payload.user.login) {
+      if (el.login !== this.userData.login) {
         const contact = new ContactController(el);
 
         stateStorage.setOneUser(contact);
@@ -100,8 +100,13 @@ export class Chat {
 
   private handleLogoutUser(e: Event): void {
     e.preventDefault();
-    const request = isNotNullable(StorageService.getUserData());
-    request.type = ResponseTypes.USER_LOGOUT;
+    const request = {
+      id: crypto.randomUUID(),
+      type: ResponseTypes.USER_LOGOUT,
+      payload: {
+        user: this.userData,
+      },
+    };
 
     WS.sendAuthMessage(request);
     StorageService.removeData();

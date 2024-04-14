@@ -1,0 +1,52 @@
+.modal {
+  @extend %blurred-background;
+
+  @include flex(center, center);
+  position: fixed;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+
+  &_active {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  @include flex(center, center, column);
+  gap: 10%;
+  width: 50%;
+  min-width: 400px;
+  max-width: 600px;
+  height: 30%;
+  color: var(--color-bg-primary);
+  text-align: center;
+  background: var(--color-font-light-primary);
+  border-radius: 20px;
+  box-shadow: inset 0 0 6px 2px rgb(0 255 255 / 70%);
+}
+
+.modal-text {
+  @include font(2.4rem, 900, 1.05);
+
+  b {
+    display: inline-block;
+    font-size: 3rem;
+    color: var(--color-primary-bright);
+    text-shadow: 1px 2px 4px var(--color-shadow-light);
+  }
+}
+
+.modal-results {
+  overflow: auto;
+  width: 85%;
+  height: 60%;
+  padding: 10px 0 10px 20px;
+  background: var(--color-background-black-transparent);
+  backdrop-filter: blur(12.5px);
+  border-radius: 15px;
+}

@@ -1,3 +1,4 @@
+import { AuthRequest } from '../../app/model/auth';
 import { WS } from '../../app/ws/ws';
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
@@ -8,11 +9,12 @@ import { AuthView } from './authView';
 
 export class Auth {
   public view: AuthView;
+  private request: AuthRequest;
 
   constructor() {
     this.view = new AuthView();
 
-    eventBus.subscribe('auth', () => this.handleAuthorization());
+    eventBus.subscribe('saveUserData', () => this.saveUserData());
 
     this.renderStaticParts();
   }
@@ -29,18 +31,13 @@ export class Auth {
       this.validateLoginInput(this.view.authForm.passwordInput)
     );
 
-    this.view.authForm.submitButton.addEventListener('click', (e: Event) => this.handleSubmitAuth(e));
+    this.view.authForm.submitButton.addEventListener('click', (e: Event) => this.handleAuthorization(e));
 
     document.addEventListener('keyup', (e: KeyboardEvent) => {
       if (e.code === 'Enter' && !this.view.authForm.submitButton.disabled) {
-        this.handleSubmitAuth(e);
+        this.handleAuthorization(e);
       }
     });
-  }
-
-  private handleSubmitAuth(e: Event): void {
-    e.preventDefault();
-    eventBus.emit('auth');
   }
 
   private validateLoginInput(input: HTMLInputElement): void {
@@ -55,9 +52,11 @@ export class Auth {
     this.view.authForm.setSubmitButton();
   }
 
-  private handleAuthorization(): void {
+  private handleAuthorization(e: Event): void {
+    e.preventDefault();
+
     const userData = this.view.authForm.getInputsValues();
-    const request = {
+    this.request = {
       id: crypto.randomUUID(),
       type: ResponseTypes.USER_LOGIN,
       payload: {
@@ -65,7 +64,10 @@ export class Auth {
       },
     };
 
-    WS.sendAuthMessage(request);
-    StorageService.saveData(request);
+    WS.sendAuthMessage(this.request);
+  }
+
+  private saveUserData(): void {
+    StorageService.saveData(this.request.payload.user);
   }
 }
