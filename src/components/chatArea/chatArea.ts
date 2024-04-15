@@ -1,4 +1,5 @@
 import { UserAuthResponse } from '../../app/model/auth';
+import { MessageResponse } from '../../app/model/message';
 import { MessageInput } from '../../utils/constants';
 import { createElementWithProperties } from '../../utils/utils';
 import { BaseComponent } from '../baseComponent';
@@ -26,20 +27,19 @@ export class ChatArea extends BaseComponent {
       this.userLogin,
     ]);
 
-    this.messagesArea = createElementWithProperties('div', [styles.messagesArea], undefined, [
+    const startMessage = createElementWithProperties('div', [styles.startMessage], undefined, [
       { innerText: 'Choose user to chat ...' },
     ]);
+    this.messagesArea = createElementWithProperties('div', [styles.messagesArea], undefined, undefined, [startMessage]);
 
-    this.messageInput = createElementWithProperties('input', [styles.messageInput], MessageInput);
-    const messageIcon = createElementWithProperties('span', [styles.messageIcon]);
-
-    this.messageButton = createElementWithProperties('button', [styles.messageButton], { type: 'submit' }, undefined, [
+    this.messageInput = createElementWithProperties('input', [styles.messagesInput], MessageInput);
+    const messageIcon = createElementWithProperties('span', [styles.messagesIcon]);
+    this.messageButton = createElementWithProperties('button', [styles.messagesButton], { type: 'submit' }, undefined, [
       messageIcon,
     ]);
-
     this.messageForm = createElementWithProperties(
       'form',
-      [styles.messageForm],
+      [styles.messagesForm],
       { novalidate: 'novalidate', method: '' },
       undefined,
       [this.messageInput, this.messageButton]
@@ -57,11 +57,14 @@ export class ChatArea extends BaseComponent {
   public setUser(data: UserAuthResponse): void {
     this.userLogin.innerText = data.login;
     this.userIcon.className = `selected-icon selected-icon_${data.isLogined}`;
+
+    this.messagesArea.classList.add('messages-area_chosen');
   }
 
-  // public renderMessage(data: MessageResponse, isOwn: boolean): {
-  //   const message = createElementWithProperties('div', [styles.messagesArea], undefined, [
-  //     { innerText: 'Choose user to chat ...' },
-  //   ]);
-  // }
+  public renderMessage(data: MessageResponse, isOwn: boolean): void {
+    const message = createElementWithProperties('div', [styles.message, `${styles.message}_${isOwn}`], undefined, [
+      { innerText: data.payload.message.text },
+    ]);
+    this.messagesArea.append(message);
+  }
 }

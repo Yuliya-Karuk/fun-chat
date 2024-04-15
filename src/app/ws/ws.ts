@@ -61,8 +61,12 @@ export class WebSocketHandler {
       eventBus.emit('changeActivityUsers', response);
     }
 
-    if (response.type === ResponseTypes.MSG_SEND) {
+    if (response.type === ResponseTypes.MSG_SEND && response.id !== null) {
       eventBus.emit('getSentMessage', response);
+    }
+
+    if (response.type === ResponseTypes.MSG_SEND && response.id === null) {
+      eventBus.emit('getReceivedMessage', response);
     }
   }
 

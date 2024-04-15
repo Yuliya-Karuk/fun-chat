@@ -12,7 +12,7 @@ export interface MessageRequest {
 }
 
 export interface MessageResponse {
-  id: string;
+  id: string | null;
   type: ResponseTypes;
   payload: {
     message: {

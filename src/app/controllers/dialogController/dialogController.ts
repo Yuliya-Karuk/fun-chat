@@ -16,6 +16,7 @@ export class DialogController {
 
     eventBus.subscribe('chooseUser', (data: UserAuthResponse) => this.setUser(data));
     eventBus.subscribe('getSentMessage', (data: MessageResponse) => this.renderSentMessage(data));
+    eventBus.subscribe('getReceivedMessage', (data: MessageResponse) => this.renderReceivedMessage(data));
   }
 
   private bindListeners(): void {
@@ -44,7 +45,12 @@ export class DialogController {
   }
 
   private renderSentMessage(data: MessageResponse): void {
-    // this.view.renderMessage(data, true);
     console.log(data);
+    this.view.renderMessage(data, true);
+  }
+
+  private renderReceivedMessage(data: MessageResponse): void {
+    console.log(data);
+    this.view.renderMessage(data, false);
   }
 }

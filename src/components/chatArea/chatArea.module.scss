@@ -38,21 +38,34 @@
 
 .messages-area {
   @include flex(center, center, column);
-  @include font(3rem, 700, normal, -0.02em);
   overflow-y: auto;
+  gap: 10px;
   align-self: stretch;
   width: 100%;
   min-height: calc(100vh - 110px - 40px - 100px);
+  padding: 10px;
   color: #fff;
+
+  &_chosen {
+    justify-content: flex-start;
+
+    .start-message {
+      display: none;
+    }
+  }
 }
 
-.message-form {
+.start-message {
+  @include font(3rem, 700, normal, -0.02em);
+}
+
+.messages-form {
   @extend %transition;
 
   @include flex(flex-start, center);
 
   @include media-hover {
-    &:has(.message-input:hover) {
+    &:has(.messages-input:hover) {
       box-shadow: 0 0 2px 1px rgb(255 255 255 / 40%);
     }
   }
@@ -62,14 +75,14 @@
   border: 1px solid var(--color-background);
   border-radius: 8px;
 
-  &:has(.search-input:focus) {
+  &:has(.messages-input:focus) {
     background: rgb(255 255 255 / 20%);
     outline: 1px solid var(--color-primary-bright);
     box-shadow: none;
   }
 }
 
-.message-input {
+.messages-input {
   @include font(2rem, 700, 1.2);
   width: calc(100% - 40px);
   height: 100%;
@@ -80,15 +93,52 @@
   border-radius: 8px;
 }
 
-.message-icon {
+.messages-icon {
   display: block;
   width: 22px;
   height: 21px;
   background: center no-repeat transparent url('../../img/send.svg');
 }
 
-.message-button {
+.messages-button {
   @include flex(center, center);
   width: 40px;
   height: 100%;
+}
+
+.message {
+  @include font(1.4rem, 700, normal);
+  @include flex(flex-end, center);
+  position: relative;
+  max-width: 80%;
+  padding: 8px;
+  background: #bdd2b6;
+  border-radius: 4px 0 4px 4px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    border: 10px solid transparent;
+  }
+
+  &_true {
+    align-self: flex-end;
+
+    &::after {
+      right: -10px;
+      border-top: 10px solid #bdd2b6;
+    }
+  }
+
+  &_false {
+    align-self: flex-start;
+    background: #26272d;
+
+    &::after {
+      top: 0;
+      left: -10px;
+      border-top: 10px solid #26272d;
+    }
+  }
 }
