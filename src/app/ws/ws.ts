@@ -2,6 +2,7 @@ import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { AuthRequest } from '../model/auth';
+import { MessageRequest } from '../model/message';
 import { UsersActiveRequest, UsersInactiveRequest } from '../model/users';
 
 export class WebSocketHandler {
@@ -59,6 +60,10 @@ export class WebSocketHandler {
     if (response.type === ResponseTypes.USER_EXTERNAL_LOGIN || response.type === ResponseTypes.USER_EXTERNAL_LOGOUT) {
       eventBus.emit('changeActivityUsers', response);
     }
+
+    if (response.type === ResponseTypes.MSG_SEND) {
+      eventBus.emit('getSentMessage', response);
+    }
   }
 
   public getActiveUsers(message: UsersActiveRequest): void {
@@ -66,6 +71,10 @@ export class WebSocketHandler {
   }
 
   public getInactiveUsers(message: UsersInactiveRequest): void {
+    this.ws.send(JSON.stringify(message));
+  }
+
+  public sendUserMessage(message: MessageRequest): void {
     this.ws.send(JSON.stringify(message));
   }
 }

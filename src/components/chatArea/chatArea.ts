@@ -5,7 +5,7 @@ import { BaseComponent } from '../baseComponent';
 import styles from './chatArea.module.scss';
 
 export class ChatArea extends BaseComponent {
-  public form: HTMLFormElement;
+  public messageForm: HTMLFormElement;
   private messagesArea: HTMLDivElement;
   private userIcon: HTMLDivElement;
   private userLogin: HTMLDivElement;
@@ -20,15 +20,15 @@ export class ChatArea extends BaseComponent {
 
   private renderContent(): void {
     this.userIcon = createElementWithProperties('div', [styles.selectedIcon]);
-    this.userLogin = createElementWithProperties('div', [styles.selectedLogin], undefined, [
-      { innerText: 'Choose user ...' },
-    ]);
+    this.userLogin = createElementWithProperties('div', [styles.selectedLogin]);
     const selectedUserContainer = createElementWithProperties('div', [styles.selectedUser], undefined, undefined, [
       this.userIcon,
       this.userLogin,
     ]);
 
-    this.messagesArea = createElementWithProperties('div', [styles.messagesArea]);
+    this.messagesArea = createElementWithProperties('div', [styles.messagesArea], undefined, [
+      { innerText: 'Choose user to chat ...' },
+    ]);
 
     this.messageInput = createElementWithProperties('input', [styles.messageInput], MessageInput);
     const messageIcon = createElementWithProperties('span', [styles.messageIcon]);
@@ -37,7 +37,7 @@ export class ChatArea extends BaseComponent {
       messageIcon,
     ]);
 
-    this.form = createElementWithProperties(
+    this.messageForm = createElementWithProperties(
       'form',
       [styles.messageForm],
       { novalidate: 'novalidate', method: '' },
@@ -45,7 +45,7 @@ export class ChatArea extends BaseComponent {
       [this.messageInput, this.messageButton]
     );
 
-    this.appendChildren([selectedUserContainer, this.messagesArea, this.form]);
+    this.appendChildren([selectedUserContainer, this.messagesArea, this.messageForm]);
   }
 
   public getMessageInputValue(): string {
@@ -58,4 +58,10 @@ export class ChatArea extends BaseComponent {
     this.userLogin.innerText = data.login;
     this.userIcon.className = `selected-icon selected-icon_${data.isLogined}`;
   }
+
+  // public renderMessage(data: MessageResponse, isOwn: boolean): {
+  //   const message = createElementWithProperties('div', [styles.messagesArea], undefined, [
+  //     { innerText: 'Choose user to chat ...' },
+  //   ]);
+  // }
 }
