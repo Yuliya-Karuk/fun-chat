@@ -1,5 +1,6 @@
 .chat-area {
   @include flex(flex-start, center, column);
+  gap: 10px;
   width: 75%;
   padding: 5px;
 }
@@ -38,13 +39,8 @@
 
 .messages-area {
   @include flex(center, center, column);
-  overflow-y: auto;
-  gap: 10px;
-  align-self: stretch;
   width: 100%;
-  min-height: calc(100vh - 110px - 40px - 100px);
-  padding: 10px;
-  color: #fff;
+  height: calc(100vh - 110px - 40px - 100px - 20px);
 
   &_chosen {
     justify-content: flex-start;
@@ -52,11 +48,51 @@
     .start-message {
       display: none;
     }
+
+    .start-history {
+      display: block;
+    }
   }
 }
 
 .start-message {
   @include font(3rem, 700, normal, -0.02em);
+  color: #fff;
+}
+
+.messages-history {
+  @include flex(flex-start, center, column);
+  overflow-y: auto;
+  gap: 10px;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  color: #fff;
+}
+
+.messages-history::-webkit-scrollbar {
+  width: 10px;
+  border: 1px solid var(--color-font-dark);
+  border-radius: 50px;
+}
+
+.messages-history::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.messages-history::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  height: 20px;
+  background-color: var(--color-font-dark);
+  border-radius: 20px;
+}
+
+.start-history {
+  @include font(3rem, 700, normal, -0.02em);
+  display: none;
+  margin: auto;
+  color: #fff;
 }
 
 .messages-form {

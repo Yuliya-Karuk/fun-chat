@@ -45,6 +45,7 @@ export class Chat {
     this.userData = userData;
 
     this.view.setUserName(this.userData.login);
+    this.dialogController.setUserData(this.userData);
   }
 
   private handleAboutNavigation(e: Event): void {

@@ -40,6 +40,7 @@ export const MessageInput = {
   minlength: '1',
   placeholder: 'Message',
   autocomplete: 'off',
+  disabled: 'disabled',
 };
 
 export const AboutParagraphs = {

@@ -1,5 +1,5 @@
 import { UserAuthResponse } from '../../app/model/auth';
-import { MessageResponse } from '../../app/model/message';
+import { Message } from '../../app/model/message';
 import { MessageInput } from '../../utils/constants';
 import { createElementWithProperties } from '../../utils/utils';
 import { BaseComponent } from '../baseComponent';
@@ -12,6 +12,8 @@ export class ChatArea extends BaseComponent {
   private userLogin: HTMLDivElement;
   private messageInput: HTMLInputElement;
   public messageButton: HTMLButtonElement;
+  private messagesHistory: HTMLDivElement;
+  private startHistory: HTMLDivElement;
 
   constructor() {
     super('div', [styles.chatArea]);
@@ -30,13 +32,26 @@ export class ChatArea extends BaseComponent {
     const startMessage = createElementWithProperties('div', [styles.startMessage], undefined, [
       { innerText: 'Choose user to chat ...' },
     ]);
-    this.messagesArea = createElementWithProperties('div', [styles.messagesArea], undefined, undefined, [startMessage]);
+    this.startHistory = createElementWithProperties('div', [styles.startHistory], undefined, [
+      { innerText: 'Write your first message ...' },
+    ]);
+    this.messagesHistory = createElementWithProperties('div', [styles.messagesHistory], undefined, undefined, [
+      this.startHistory,
+    ]);
+    this.messagesArea = createElementWithProperties('div', [styles.messagesArea], undefined, undefined, [
+      startMessage,
+      this.messagesHistory,
+    ]);
 
     this.messageInput = createElementWithProperties('input', [styles.messagesInput], MessageInput);
     const messageIcon = createElementWithProperties('span', [styles.messagesIcon]);
-    this.messageButton = createElementWithProperties('button', [styles.messagesButton], { type: 'submit' }, undefined, [
-      messageIcon,
-    ]);
+    this.messageButton = createElementWithProperties(
+      'button',
+      [styles.messagesButton],
+      { type: 'submit', disabled: 'disabled' },
+      undefined,
+      [messageIcon]
+    );
     this.messageForm = createElementWithProperties(
       'form',
       [styles.messagesForm],
@@ -46,6 +61,11 @@ export class ChatArea extends BaseComponent {
     );
 
     this.appendChildren([selectedUserContainer, this.messagesArea, this.messageForm]);
+  }
+
+  public enableMessageForm(): void {
+    this.messageInput.removeAttribute('disabled');
+    this.messageButton.removeAttribute('disabled');
   }
 
   public getMessageInputValue(): string {
@@ -61,10 +81,19 @@ export class ChatArea extends BaseComponent {
     this.messagesArea.classList.add('messages-area_chosen');
   }
 
-  public renderMessage(data: MessageResponse, isOwn: boolean): void {
-    const message = createElementWithProperties('div', [styles.message, `${styles.message}_${isOwn}`], undefined, [
-      { innerText: data.payload.message.text },
+  public renderStartHistory(): void {
+    this.messagesHistory.replaceChildren();
+    this.messagesHistory.append(this.startHistory);
+  }
+
+  public removeStartHistory(): void {
+    this.messagesHistory.removeChild(this.startHistory);
+  }
+
+  public renderMessage(message: Message, isOwn: boolean): void {
+    const msg = createElementWithProperties('div', [styles.message, `${styles.message}_${isOwn}`], undefined, [
+      { innerText: message.text },
     ]);
-    this.messagesArea.append(message);
+    this.messagesHistory.append(msg);
   }
 }

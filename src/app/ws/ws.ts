@@ -2,7 +2,7 @@ import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { AuthRequest } from '../model/auth';
-import { MessageRequest } from '../model/message';
+import { MessageHistoryRequest, MessageRequest } from '../model/message';
 import { UsersActiveRequest, UsersInactiveRequest } from '../model/users';
 
 export class WebSocketHandler {
@@ -68,6 +68,10 @@ export class WebSocketHandler {
     if (response.type === ResponseTypes.MSG_SEND && response.id === null) {
       eventBus.emit('getReceivedMessage', response);
     }
+
+    if (response.type === ResponseTypes.MSG_FROM_USER) {
+      eventBus.emit('getHistory', response);
+    }
   }
 
   public getActiveUsers(message: UsersActiveRequest): void {
@@ -79,6 +83,10 @@ export class WebSocketHandler {
   }
 
   public sendUserMessage(message: MessageRequest): void {
+    this.ws.send(JSON.stringify(message));
+  }
+
+  public getHistory(message: MessageHistoryRequest): void {
     this.ws.send(JSON.stringify(message));
   }
 }
