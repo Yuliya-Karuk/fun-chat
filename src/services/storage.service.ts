@@ -17,7 +17,7 @@ export class StorageService {
     return Boolean(data);
   }
 
-  public static removeData(): void {
+  public static removeUserData(): void {
     sessionStorage.removeItem(this.storageKey);
   }
 }

@@ -3,7 +3,7 @@ import { stateStorage } from '../../../services/state.service';
 import { ResponseTypes } from '../../../types/enums';
 import { eventBus } from '../../../utils/eventBus';
 import { isNotNullable } from '../../../utils/utils';
-import { ContactAuthResponse, UserAuthRequest, UserAuthResponse } from '../../model/auth';
+import { ContactAuthResponse, UserAuthResponse } from '../../model/auth';
 import { MessageResponse } from '../../model/message';
 import { UsersActiveResponse, UsersInactiveResponse } from '../../model/users';
 import { WS } from '../../ws/ws';
@@ -11,27 +11,18 @@ import { ContactController } from '../contactController/contactController';
 
 export class ContactsController {
   public view: Contacts;
-  public userData: UserAuthRequest;
-  private chosenUser: UserAuthResponse;
 
   constructor() {
     this.view = new Contacts();
 
-    eventBus.subscribe('goToChatPage', (data: UserAuthRequest) => this.getUsers(data));
-    eventBus.subscribe('chooseUser', (data: UserAuthResponse) => this.setChosenUser(data));
+    eventBus.subscribe('goToChatPage', () => this.setUsers());
     eventBus.subscribe('getActiveUsers', (data: UsersActiveResponse) => this.getActiveUsers(data));
     eventBus.subscribe('getInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
     eventBus.subscribe('changeActivityUsers', (data: ContactAuthResponse) => this.changeActivityUsers(data));
     eventBus.subscribe('getReceivedMessage', (data: MessageResponse) => this.setUnreadMessages(data));
   }
 
-  private setChosenUser(data: UserAuthResponse): void {
-    this.chosenUser = data;
-  }
-
-  private getUsers(userData: UserAuthRequest): void {
-    this.userData = userData;
-
+  private setUsers(): void {
     const request = {
       id: crypto.randomUUID(),
       type: ResponseTypes.USER_ACTIVE,
@@ -44,42 +35,54 @@ export class ContactsController {
       payload: null,
     };
 
-    this.view.contacts.replaceChildren();
-
     WS.getActiveUsers(request);
     WS.getInactiveUsers(request2);
   }
 
   private getActiveUsers(activeUsersData: UsersActiveResponse): void {
     const { users } = activeUsersData.payload;
-    this.renderContacts(users);
+    this.setContacts(users, false);
   }
 
   private getInactiveUsers(inactiveUsersData: UsersActiveResponse): void {
     const { users } = inactiveUsersData.payload;
-    this.renderContacts(users);
+    this.setContacts(users, true);
   }
 
-  private renderContacts(users: UserAuthResponse[]): void {
+  private setContacts(users: UserAuthResponse[], isLastResponse: boolean): void {
     users.forEach(el => {
-      if (el.login !== this.userData.login) {
+      if (el.login !== stateStorage.getUser().login) {
         const contact = new ContactController(el);
 
         stateStorage.setOneUser(contact);
-        this.view.contacts.append(contact.view.getNode());
       }
+    });
+
+    if (isLastResponse) {
+      this.renderContacts();
+    }
+  }
+
+  private renderContacts(): void {
+    this.view.clearContacts();
+
+    stateStorage.getUsers().forEach(user => {
+      this.view.contacts.append(user.view.getNode());
     });
   }
 
   private changeActivityUsers(data: ContactAuthResponse): void {
     let updatedUser;
 
+    console.log('check', data.payload.user, stateStorage.checkUserIsExist(data.payload.user));
     if (stateStorage.checkUserIsExist(data.payload.user)) {
+      console.log('update');
       updatedUser = stateStorage.updateOneUser(data.payload.user);
 
       updatedUser.updateUserVisibility();
       this.view.contacts.removeChild(updatedUser.view.getNode());
     } else {
+      console.log('create new');
       updatedUser = new ContactController(data.payload.user);
       stateStorage.setOneUser(updatedUser);
     }

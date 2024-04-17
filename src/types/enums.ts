@@ -8,6 +8,7 @@ export enum ResponseTypes {
   'USER_EXTERNAL_LOGOUT' = 'USER_EXTERNAL_LOGOUT',
   'ERROR' = 'ERROR',
   'MSG_FROM_USER' = 'MSG_FROM_USER',
+  'MSG_DELIVER' = 'MSG_DELIVER',
 }
 
 export enum PagesNames {

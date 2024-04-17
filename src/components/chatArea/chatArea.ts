@@ -89,23 +89,15 @@ export class ChatArea extends BaseComponent {
     this.messagesHistory.replaceChildren();
   }
 
-  // public renderMessage(message: Message, isOwn: boolean): void {
-  //   const msg = createElementWithProperties('div', [styles.message, `${styles.message}_${isOwn}`], undefined, [
-  //     { innerText: message.text },
-  //   ]);
-  //   this.messagesHistory.append(msg);
-  // }
-
-  // public renderNewMessage(message: Message, isOwn: boolean): void {
-  //   const msg = createElementWithProperties('div', [styles.message, `${styles.message}_${isOwn}`], undefined, [
-  //     { innerText: message.text },
-  //   ]);
-  //   this.messagesHistory.append(msg);
-  //   msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  // }
-
   public renderNewMessage(msg: HTMLElement): void {
     this.messagesHistory.append(msg);
     msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  public clearPreviousUser(): void {
+    this.messagesArea.classList.remove('messages-area_chosen');
+
+    this.userLogin.innerText = '';
+    this.userIcon.className = `selected-icon`;
   }
 }

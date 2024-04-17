@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
@@ -40,6 +41,7 @@ export class WebSocketHandler {
     if (response.type === ResponseTypes.USER_LOGIN) {
       if (!StorageService.isSavedUser()) {
         eventBus.emit('saveUserData', response);
+        eventBus.emit('clearStateUsers', response);
       }
 
       eventBus.emit('authorizeUser', response);
@@ -61,6 +63,10 @@ export class WebSocketHandler {
       eventBus.emit('changeActivityUsers', response);
     }
 
+    if (response.type === ResponseTypes.USER_EXTERNAL_LOGIN) {
+      eventBus.emit('changeMessagesDelivered', response);
+    }
+
     if (response.type === ResponseTypes.MSG_SEND && response.id !== null) {
       eventBus.emit('getSentMessage', response);
     }
@@ -71,6 +77,10 @@ export class WebSocketHandler {
 
     if (response.type === ResponseTypes.MSG_FROM_USER) {
       eventBus.emit('getHistory', response);
+    }
+
+    if (response.type === ResponseTypes.MSG_DELIVER) {
+      eventBus.emit('MSGDelivered', response);
     }
   }
 

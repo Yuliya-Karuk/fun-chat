@@ -1,5 +1,7 @@
 import { AuthRequest } from '../../app/model/auth';
 import { WS } from '../../app/ws/ws';
+import { router } from '../../router/router';
+import { Routes } from '../../router/router.types';
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
@@ -34,7 +36,7 @@ export class Auth {
     this.view.authForm.submitButton.addEventListener('click', (e: Event) => this.handleAuthorization(e));
 
     document.addEventListener('keyup', (e: KeyboardEvent) => {
-      if (e.code === 'Enter' && !this.view.authForm.submitButton.disabled) {
+      if (e.code === 'Enter' && !this.view.authForm.submitButton.disabled && router.currentPage === Routes.Auth) {
         this.handleAuthorization(e);
       }
     });

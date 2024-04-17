@@ -38,11 +38,26 @@ export class MessageView extends BaseComponent {
     this.appendChildren([infoContainer, this.text, statusContainer]);
   }
 
-  public setContent(author: string, isOwn: boolean, date: string, text: string, isReaded: boolean): void {
+  public setContent(
+    author: string,
+    isOwn: boolean,
+    date: string,
+    text: string,
+    isDelivered: boolean,
+    isReaded: boolean
+  ): void {
     this.node.classList.add(`${styles.message}_${isOwn}`);
     this.author.innerText = author;
     this.date.innerText = date;
     this.text.innerText = text;
-    this.status.innerText = !isReaded ? 'Delivered' : 'Read';
+    if (isDelivered) {
+      this.status.innerText = !isReaded ? 'Delivered' : 'Read';
+    } else {
+      this.status.innerText = 'Undelivered';
+    }
+  }
+
+  public setDeliveredStatus(): void {
+    this.status.innerText = 'Delivered';
   }
 }

@@ -4,24 +4,24 @@ import { UserAuthRequest } from '../../app/model/auth';
 import { WS } from '../../app/ws/ws';
 import { router } from '../../router/router';
 import { Routes } from '../../router/router.types';
+import { stateStorage } from '../../services/state.service';
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
-import { checkEventTarget } from '../../utils/utils';
+import { checkEventTarget, isNotNullable } from '../../utils/utils';
 import { ChatView } from './chatView';
 
 export class Chat {
   private dialogController: DialogController;
   private contactsController: ContactsController;
   public view: ChatView;
-  private userData: UserAuthRequest;
 
   constructor() {
     this.view = new ChatView();
     this.dialogController = new DialogController();
     this.contactsController = new ContactsController();
 
-    eventBus.subscribe('goToChatPage', (data: UserAuthRequest) => this.setChatData(data));
+    eventBus.subscribe('goToChatPage', (data: UserAuthRequest) => this.setUserData(data));
     eventBus.subscribe('goToLoginPage', () => this.handleLogoutNavigation(Routes.Auth));
 
     this.renderStaticParts();
@@ -41,11 +41,10 @@ export class Chat {
     this.view.header.aboutLink.addEventListener('click', (e: Event) => this.handleAboutNavigation(e));
   }
 
-  private setChatData(userData: UserAuthRequest): void {
-    this.userData = userData;
+  private setUserData(userData: UserAuthRequest): void {
+    stateStorage.setUser(userData);
 
-    this.view.setUserName(this.userData.login);
-    this.dialogController.setUserData(this.userData);
+    this.view.setUserName(userData.login);
   }
 
   private handleAboutNavigation(e: Event): void {
@@ -61,12 +60,12 @@ export class Chat {
       id: crypto.randomUUID(),
       type: ResponseTypes.USER_LOGOUT,
       payload: {
-        user: this.userData,
+        user: isNotNullable(StorageService.getUserData()),
       },
     };
 
     WS.sendAuthMessage(request);
-    StorageService.removeData();
+    StorageService.removeUserData();
   }
 
   private handleLogoutNavigation(location: Routes): void {

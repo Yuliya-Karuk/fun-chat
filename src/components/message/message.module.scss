@@ -48,6 +48,10 @@
 
 .messageStatusContainer {
   @include flex(space-between, center);
+
+  .message_false & {
+    display: none;
+  }
 }
 
 .message-status {

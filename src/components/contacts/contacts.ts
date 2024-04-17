@@ -39,4 +39,8 @@ export class Contacts extends BaseComponent {
 
     this.appendChildren([this.searchForm, this.contacts]);
   }
+
+  public clearContacts(): void {
+    this.contacts.replaceChildren();
+  }
 }

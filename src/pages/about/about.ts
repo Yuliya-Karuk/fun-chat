@@ -29,7 +29,7 @@ export class About {
     e.preventDefault();
 
     if (needToLogout) {
-      StorageService.removeData();
+      StorageService.removeUserData();
     }
 
     const location = checkEventTarget(e.target).getAttribute('href') || '';

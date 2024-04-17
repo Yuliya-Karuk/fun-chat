@@ -1,21 +1,18 @@
 import { ResponseTypes } from '../../types/enums';
+import { UserAuthData } from './auth';
 
 export interface MessageHistoryRequest {
   id: string;
   type: ResponseTypes;
   payload: {
-    user: {
-      login: string;
-    };
+    user: Pick<UserAuthData, 'login'>;
   };
 }
 
-export interface MessageHistoryResponse {
-  id: string;
-  type: ResponseTypes;
-  payload: {
-    messages: [];
-  };
+export interface MessageStatus {
+  isDelivered: boolean;
+  isReaded: boolean;
+  isEdited: boolean;
 }
 
 export interface Message {
@@ -24,14 +21,22 @@ export interface Message {
   to: string;
   text: string;
   datetime: number;
-  status: {
-    isDelivered: boolean;
-    isReaded: boolean;
-    isEdited: boolean;
-  };
+  status: MessageStatus;
 }
 
 export type MessageFromUser = Pick<Message, 'to' | 'text'>;
+
+export type MessageDelivered = Pick<Message, 'id'> & {
+  status: Pick<MessageStatus, 'isDelivered'>;
+};
+
+export interface MessageHistoryResponse {
+  id: string;
+  type: ResponseTypes;
+  payload: {
+    messages: Message[] | [];
+  };
+}
 
 export interface MessageRequest {
   id: string;
@@ -46,5 +51,13 @@ export interface MessageResponse {
   type: ResponseTypes;
   payload: {
     message: Message;
+  };
+}
+
+export interface MessageDeliveredResponse {
+  id: null;
+  type: ResponseTypes;
+  payload: {
+    message: MessageDelivered;
   };
 }
