@@ -1,5 +1,4 @@
 import { UserAuthResponse } from '../../app/model/auth';
-import { Message } from '../../app/model/message';
 import { MessageInput } from '../../utils/constants';
 import { createElementWithProperties } from '../../utils/utils';
 import { BaseComponent } from '../baseComponent';
@@ -86,14 +85,27 @@ export class ChatArea extends BaseComponent {
     this.messagesHistory.append(this.startHistory);
   }
 
-  public removeStartHistory(): void {
-    this.messagesHistory.removeChild(this.startHistory);
+  public removeMessagesHistory(): void {
+    this.messagesHistory.replaceChildren();
   }
 
-  public renderMessage(message: Message, isOwn: boolean): void {
-    const msg = createElementWithProperties('div', [styles.message, `${styles.message}_${isOwn}`], undefined, [
-      { innerText: message.text },
-    ]);
+  // public renderMessage(message: Message, isOwn: boolean): void {
+  //   const msg = createElementWithProperties('div', [styles.message, `${styles.message}_${isOwn}`], undefined, [
+  //     { innerText: message.text },
+  //   ]);
+  //   this.messagesHistory.append(msg);
+  // }
+
+  // public renderNewMessage(message: Message, isOwn: boolean): void {
+  //   const msg = createElementWithProperties('div', [styles.message, `${styles.message}_${isOwn}`], undefined, [
+  //     { innerText: message.text },
+  //   ]);
+  //   this.messagesHistory.append(msg);
+  //   msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // }
+
+  public renderNewMessage(msg: HTMLElement): void {
     this.messagesHistory.append(msg);
+    msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

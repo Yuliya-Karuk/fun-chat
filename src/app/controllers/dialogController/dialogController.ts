@@ -4,6 +4,7 @@ import { eventBus } from '../../../utils/eventBus';
 import { UserAuthRequest, UserAuthResponse } from '../../model/auth';
 import { Message, MessageHistoryResponse, MessageResponse } from '../../model/message';
 import { WS } from '../../ws/ws';
+import { MessageController } from '../messageController/messageController';
 
 export class DialogController {
   public view: ChatArea;
@@ -63,24 +64,28 @@ export class DialogController {
   }
 
   private renderSentMessage(data: MessageResponse): void {
-    console.log(data);
-    this.view.renderMessage(data.payload.message, true);
+    const newMsg = new MessageController(data.payload.message, true);
+
+    this.view.renderNewMessage(newMsg.view.getNode());
   }
 
   private renderReceivedMessage(data: MessageResponse): void {
-    console.log(data);
-    this.view.renderMessage(data.payload.message, false);
+    if (this.chosenUser && data.payload.message.from === this.chosenUser.login) {
+      const newMsg = new MessageController(data.payload.message, false);
+      this.view.renderNewMessage(newMsg.view.getNode());
+    }
   }
 
   private renderHistoryMessage(data: MessageHistoryResponse): void {
     this.view.enableMessageForm();
+    this.view.removeMessagesHistory();
 
     if (data.payload.messages.length !== 0) {
-      this.view.removeStartHistory();
-
       data.payload.messages.forEach((msg: Message) => {
-        const author = msg.from === this.user.login;
-        this.view.renderMessage(msg, author);
+        const isOwn = msg.from === this.user.login;
+        const newMsg = new MessageController(msg, isOwn);
+
+        this.view.renderNewMessage(newMsg.view.getNode());
       });
     } else {
       this.view.renderStartHistory();

@@ -1,0 +1,70 @@
+.message {
+  @include flex(flex-end, unset, column);
+  position: relative;
+  gap: 5px;
+  min-width: 150px;
+  max-width: 80%;
+  padding: 5px;
+  background: #bdd2b6;
+  border-radius: 4px 0 4px 4px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    border: 10px solid transparent;
+  }
+
+  &_true {
+    align-self: flex-end;
+    color: #26272d;
+
+    &::after {
+      right: -10px;
+      border-top: 10px solid #bdd2b6;
+    }
+  }
+
+  &_false {
+    align-self: flex-start;
+    background: #26272d;
+
+    &::after {
+      top: 0;
+      left: -10px;
+      border-top: 10px solid #26272d;
+    }
+  }
+}
+
+.message-info-container {
+  @include font(0.8rem, 700, normal);
+  @include flex(space-between, center);
+}
+
+.message-text {
+  @include font(1.6rem, 700, normal);
+}
+
+.messageStatusContainer {
+  @include flex(space-between, center);
+}
+
+.message-status {
+  @include font(0.8rem, 700, normal);
+}
+
+.message-status-icon {
+  width: 20px;
+  height: 20px;
+
+  &_delivered {
+    background: center no-repeat url('../../img/checked.svg');
+    background-size: contain;
+  }
+
+  &_read {
+    background: center no-repeat url('../../img/double-checked.svg');
+    background-size: contain;
+  }
+}

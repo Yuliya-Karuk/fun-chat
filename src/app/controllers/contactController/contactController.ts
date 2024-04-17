@@ -5,6 +5,7 @@ import { UserAuthResponse } from '../../model/auth';
 export class ContactController {
   public view: Contact;
   public userData: UserAuthResponse;
+  public unreadMessages: number = 0;
 
   constructor(userData: UserAuthResponse) {
     this.userData = userData;
@@ -20,5 +21,14 @@ export class ContactController {
 
   public updateUserVisibility(): void {
     this.view.setUserActivity(this.userData);
+  }
+
+  public setUnreadMessages(messagesCount: number): void {
+    this.unreadMessages = messagesCount;
+    this.view.setUnreadMessages(this.unreadMessages);
+  }
+
+  public getUnreadMessages(): number {
+    return this.unreadMessages;
   }
 }

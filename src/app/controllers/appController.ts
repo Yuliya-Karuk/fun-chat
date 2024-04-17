@@ -1,14 +1,14 @@
-import { ModalController } from '../app/controllers/modalController/modalController';
-import { WS } from '../app/ws/ws';
-import { About } from '../pages/about/about';
-import { Auth } from '../pages/auth/auth';
-import { Chat } from '../pages/chat/chat';
-import { router } from '../router/router';
-import { Routes } from '../router/router.types';
-import { StorageService } from '../services/storage.service';
-import { ResponseTypes } from '../types/enums';
-import { eventBus } from '../utils/eventBus';
-import { isNotNullable } from '../utils/utils';
+import { About } from '../../pages/about/about';
+import { Auth } from '../../pages/auth/auth';
+import { Chat } from '../../pages/chat/chat';
+import { router } from '../../router/router';
+import { Routes } from '../../router/router.types';
+import { StorageService } from '../../services/storage.service';
+import { ResponseTypes } from '../../types/enums';
+import { eventBus } from '../../utils/eventBus';
+import { isNotNullable } from '../../utils/utils';
+import { WS } from '../ws/ws';
+import { ModalController } from './modalController/modalController';
 
 export class AppController {
   private body: HTMLElement;

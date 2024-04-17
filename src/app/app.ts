@@ -1,6 +1,6 @@
-import { AppController } from '../controllers/appController';
 import { router } from '../router/router';
 import { checkRoute } from '../utils/utils';
+import { AppController } from './controllers/appController';
 
 export class App {
   private controller: AppController;

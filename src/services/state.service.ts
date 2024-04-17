@@ -18,6 +18,10 @@ export class StateService {
     updatedUser.userData.isLogined = userData.isLogined;
     return updatedUser;
   }
+
+  public getUsers(): ContactController[] {
+    return this.users;
+  }
 }
 
 export const stateStorage = new StateService();
