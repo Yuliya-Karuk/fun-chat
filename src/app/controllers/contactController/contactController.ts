@@ -30,7 +30,6 @@ export class ContactController {
   private countUnreadMessage(data: MessageHistoryResponse): void {
     if (data.id === this.historyRequestId) {
       const unreadMessages = data.payload.messages.filter(msg => !msg.status.isReaded && msg.from === this.login);
-      console.log(unreadMessages);
       this.setUnreadMessages(unreadMessages.length);
     }
   }

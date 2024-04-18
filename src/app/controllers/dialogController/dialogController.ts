@@ -17,23 +17,24 @@ export class DialogController {
 
     this.bindListeners();
 
-    eventBus.subscribe('goToChatPage', () => this.clearDialog());
     eventBus.subscribe('chooseRecipient', (data: UserAuthResponse) => this.setChosenUser(data));
     eventBus.subscribe('getSentMessage', (data: MessageResponse) => this.renderSentMessage(data));
     eventBus.subscribe('getReceivedMessage', (data: MessageResponse) => this.renderReceivedMessage(data));
     eventBus.subscribe('receivedHistory', (data: MessageHistoryResponse) => this.renderHistoryMessage(data));
     eventBus.subscribe('changeMessagesDelivered', (data: ContactAuthResponse) => this.setMessageDelivered(data));
+    eventBus.subscribe('ReceivedMSGIsRead', () => this.view.removeDelimiter());
+    eventBus.subscribe('goToLoginPage', () => this.clearPreviousUser());
   }
 
-  private clearDialog(): void {
+  private clearPreviousUser(): void {
     this.view.clearPreviousUser();
   }
 
   private bindListeners(): void {
     this.view.messageInput.addEventListener('input', () => this.handleMessageInput());
     this.view.messageForm.addEventListener('submit', (e: Event) => this.sendMessageToUser(e));
-    this.view.messagesHistory.addEventListener('click', () => this.sendMessagesAreRead());
-    // this.view.messagesHistory.addEventListener('scroll', () => this.sendMessagesRead());
+    this.view.messagesHistory.addEventListener('pointerdown', () => this.sendMessagesAreRead());
+    this.view.messagesHistory.addEventListener('wheel', () => this.handleScrollMessages());
   }
 
   private handleMessageInput(): void {
@@ -93,6 +94,7 @@ export class DialogController {
     const chosenUser = stateStorage.getChosenRecipient();
 
     if (chosenUser && data.payload.message.from === chosenUser) {
+      this.view.setDelimiter();
       const newMsg = new MessageController(data.payload.message, false);
 
       stateStorage.pushMessageToHistory(newMsg);
@@ -108,6 +110,10 @@ export class DialogController {
         data.payload.messages.forEach((msg: Message) => {
           const isOwn = msg.from === stateStorage.getChatOwner();
           const newMsg = new MessageController(msg, isOwn);
+
+          if (!isOwn && newMsg.isReaded === false) {
+            this.view.setDelimiter();
+          }
 
           stateStorage.pushMessageToHistory(newMsg);
           this.view.renderNewMessage(newMsg.view.getNode());
@@ -147,10 +153,7 @@ export class DialogController {
     eventBus.emit('resetUnreadMessages', stateStorage.getChosenRecipient());
   }
 
-  // private setMessageRead(data: MessageIsReadedResponse): void {
-  //   const msg = stateStorage.getMessageById(data.payload.message.id);
-  //   if (msg) {
-  //     msg.setMessageRead();
-  //   }
-  // }
+  private handleScrollMessages(): void {
+    this.sendMessagesAreRead();
+  }
 }

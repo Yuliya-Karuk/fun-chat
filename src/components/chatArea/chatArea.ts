@@ -6,13 +6,15 @@ import styles from './chatArea.module.scss';
 
 export class ChatArea extends BaseComponent {
   public messageForm: HTMLFormElement;
-  private messagesArea: HTMLDivElement;
+  public messagesArea: HTMLDivElement;
   private userIcon: HTMLDivElement;
   private userLogin: HTMLDivElement;
   public messageInput: HTMLInputElement;
   public messageButton: HTMLButtonElement;
   public messagesHistory: HTMLDivElement;
   private startHistory: HTMLDivElement;
+  private delimiter: HTMLDivElement;
+  private isDelimeterSet: boolean = false;
 
   constructor() {
     super('div', [styles.chatArea]);
@@ -21,6 +23,8 @@ export class ChatArea extends BaseComponent {
   }
 
   private renderContent(): void {
+    this.delimiter = createElementWithProperties('div', [styles.messagesDelimiter]);
+
     this.userIcon = createElementWithProperties('div', [styles.selectedIcon]);
     this.userLogin = createElementWithProperties('div', [styles.selectedLogin]);
     const selectedUserContainer = createElementWithProperties('div', [styles.selectedUser], undefined, undefined, [
@@ -111,5 +115,19 @@ export class ChatArea extends BaseComponent {
 
     this.userLogin.innerText = '';
     this.userIcon.className = `selected-icon`;
+  }
+
+  public setDelimiter(): void {
+    if (!this.isDelimeterSet) {
+      this.messagesHistory.append(this.delimiter);
+      this.isDelimeterSet = true;
+    }
+  }
+
+  public removeDelimiter(): void {
+    if (this.messagesHistory.contains(this.delimiter)) {
+      this.messagesHistory.removeChild(this.delimiter);
+      this.isDelimeterSet = false;
+    }
   }
 }

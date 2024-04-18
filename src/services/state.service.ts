@@ -24,6 +24,7 @@ export class StateService {
 
   private clearState(): void {
     this.users = [];
+    this.recipientsData = [];
     this.chosenRecipient = null;
   }
 

@@ -18,6 +18,7 @@ export class ContactsController {
     eventBus.subscribe('receivedInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
     eventBus.subscribe('receivedAllUser', (data: UserAuthResponse[]) => this.createContacts(data));
     eventBus.subscribe('changeActivityUsers', (data: ContactAuthResponse) => this.changeActivityUsers(data));
+    eventBus.subscribe('goToLoginPage', () => this.clearPreviousUser());
   }
 
   private setUsers(): void {
@@ -41,14 +42,12 @@ export class ContactsController {
     const { users } = activeUsersData.payload;
 
     stateStorage.setRecipientData(users, false);
-    // this.setContacts(users, false);
   }
 
   private getInactiveUsers(inactiveUsersData: UsersActiveResponse): void {
     const { users } = inactiveUsersData.payload;
 
     stateStorage.setRecipientData(users, true);
-    // this.setContacts(users, true);
   }
 
   private createContacts(recipientsData: UserAuthResponse[]): void {
@@ -71,13 +70,12 @@ export class ContactsController {
       }
     });
 
+    console.log(this.view);
     this.renderContacts();
   }
 
   private renderContacts(): void {
-    console.log(this.view.contacts);
     this.view.clearContacts();
-    console.log(this.view.contacts);
 
     stateStorage.getUsers().forEach(user => {
       this.view.contacts.append(user.view.getNode());
@@ -96,8 +94,20 @@ export class ContactsController {
       this.view.contacts.removeChild(updatedUser.view.getNode());
     } else {
       console.log('create new');
-      updatedUser = new ContactController(data.payload.user);
-      stateStorage.setOneUser(updatedUser);
+      const request = {
+        id: crypto.randomUUID(),
+        type: ResponseTypes.MSG_FROM_USER,
+        payload: {
+          user: {
+            login: data.payload.user.login,
+          },
+        },
+      };
+
+      updatedUser = new ContactController(data.payload.user, request.id);
+
+      WS.getHistory(request);
+      stateStorage.setOneRecipient(updatedUser);
     }
 
     if (updatedUser.isLogined) {
@@ -107,10 +117,8 @@ export class ContactsController {
     }
   }
 
-  // private setUnreadMessages(data: MessageResponse): void {
-  //   const users = stateStorage.getUsers();
-  //   const author = isNotNullable(users.find(user => user.userData.login === data.payload.message.from));
-  //   const { unreadMessages } = author;
-  //   author.setUnreadMessages(unreadMessages + 1);
-  // }
+  private clearPreviousUser(): void {
+    this.view.clearContacts();
+    console.log(this.view);
+  }
 }
