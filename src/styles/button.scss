@@ -2,6 +2,7 @@
   @extend %transition;
 
   @include font(2rem, 700, 1.25);
+  @include flex(center, center);
 
   @include media-hover {
     &:not([disabled]):hover {
@@ -14,12 +15,11 @@
   }
 
   @include media-tablet {
-    padding: 5px 10px;
     font-size: 1.4rem;
   }
   padding: 10px 20px;
   color: var(--color-font-light);
-  background-color: var(--color-button);
+  background-color: var(--color-primary);
   border-radius: 8px;
 
   &:not([disabled]):active {

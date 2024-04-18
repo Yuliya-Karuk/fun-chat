@@ -1,5 +1,9 @@
 .auth {
   @include flex(center, center);
+
+  @include media-tablet-mini {
+    flex-direction: column;
+  }
   column-gap: 20px;
   height: 100vh;
   margin: 0 auto;

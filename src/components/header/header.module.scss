@@ -33,7 +33,7 @@
 }
 
 .header-button {
-  &_hidden {
+  .header &_hidden {
     display: none;
   }
 }

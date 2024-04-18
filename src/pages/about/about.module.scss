@@ -1,18 +1,33 @@
 .about {
-  background: #1c1d22;
+  background: var(--color-bg-primary);
 
   .main {
+
+    @include media-tablet-mini {
+      flex-direction: column;
+    }
     gap: 20px;
+  }
+
+  .app-content {
+    @include media-mobile {
+      display: none;
+    }
   }
 }
 
 .about-content {
   @include flex(flex-start, center, column);
+
+  @include media-tablet-mini {
+    width: 90%;
+  }
   gap: 15px;
-  align-self: stretch;
+  align-self: center;
   width: 50%;
+  height: 80%;
   padding: 20px;
-  box-shadow: 0 0 6px 2px rgb(0 255 255 / 70%);
+  box-shadow: 0 0 6px 2px var(--color-hover);
 }
 
 .about-text {

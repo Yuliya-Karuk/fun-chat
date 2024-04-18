@@ -33,18 +33,10 @@ export class Header extends BaseComponent {
 
     this.userName = createElementWithProperties('h2', [styles.headerName]);
 
-    this.aboutLink = createElementWithProperties('a', ['btn', styles.headerButton], { href: Routes.About }, [
-      { innerText: 'About' },
-    ]);
-    this.chatLink = createElementWithProperties('a', ['btn', styles.headerButton], { href: Routes.Chat }, [
-      { innerText: 'Chat' },
-    ]);
-    this.logoutLink = createElementWithProperties('a', ['btn', styles.headerButton], { href: Routes.Auth }, [
-      { innerText: 'Logout' },
-    ]);
-    this.loginLink = createElementWithProperties('a', ['btn', styles.headerButton], { href: Routes.Auth }, [
-      { innerText: 'Login' },
-    ]);
+    this.aboutLink = createElementWithProperties('a', ['btn'], { href: Routes.About }, [{ innerText: 'About' }]);
+    this.chatLink = createElementWithProperties('a', ['btn'], { href: Routes.Chat }, [{ innerText: 'Chat' }]);
+    this.logoutLink = createElementWithProperties('a', ['btn'], { href: Routes.Auth }, [{ innerText: 'Logout' }]);
+    this.loginLink = createElementWithProperties('a', ['btn'], { href: Routes.Auth }, [{ innerText: 'Login' }]);
 
     const headerWrapper = createElementWithProperties('div', [styles.headerWrapper], undefined, undefined, [
       this.userName,
