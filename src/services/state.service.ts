@@ -1,54 +1,69 @@
 import { ContactController } from '../app/controllers/contactController/contactController';
 import { MessageController } from '../app/controllers/messageController/messageController';
-import { UserAuthRequest, UserAuthResponse } from '../app/model/auth';
+import { AuthResponse, UserAuthResponse } from '../app/model/auth';
 import { eventBus } from '../utils/eventBus';
 import { isNotNullable } from '../utils/utils';
 
+interface UnreadMessagesNumbers {
+  [login: string]: number;
+}
+
 export class StateService {
   private users: ContactController[] = [];
-  private chatOwner: UserAuthRequest;
-  private chosenUser: UserAuthResponse | null;
-  private history: MessageController[];
+  private chatOwner: string;
+  private recipientsData: UserAuthResponse[] = [];
+  private chosenRecipient: string | null;
+  private history: MessageController[] = [];
+  private unreadMessagesNumbers: UnreadMessagesNumbers;
 
   constructor() {
-    eventBus.subscribe('clearStateUsers', () => this.clearState());
-    eventBus.subscribe('chooseUser', (data: UserAuthResponse) => this.setChosenUser(data));
+    eventBus.subscribe('clearState', () => this.clearState());
+    eventBus.subscribe('authorizeUser', (data: AuthResponse) => this.setChatOwner(data));
+    eventBus.subscribe('chooseRecipient', (data: UserAuthResponse) => this.setChosenRecipient(data));
   }
 
   private clearState(): void {
     this.users = [];
-    this.chosenUser = null;
+    this.chosenRecipient = null;
   }
 
-  public setUser(userData: UserAuthRequest): void {
-    this.chatOwner = userData;
+  public setChatOwner(userData: AuthResponse): void {
+    this.chatOwner = userData.payload.user.login;
   }
 
-  public getUser(): UserAuthRequest {
+  public getChatOwner(): string {
     return this.chatOwner;
   }
 
-  private setChosenUser(data: UserAuthResponse): void {
-    this.chosenUser = data;
+  public setRecipientData(users: UserAuthResponse[], isInactive: boolean): void {
+    this.recipientsData = [...this.recipientsData, ...users];
+
+    if (isInactive) {
+      eventBus.emit('receivedAllUser', this.recipientsData);
+    }
+  }
+
+  public setOneRecipient(user: ContactController): void {
+    this.users.push(user);
+  }
+
+  private setChosenRecipient(data: UserAuthResponse): void {
+    this.chosenRecipient = data.login;
     this.history = [];
   }
 
-  public getChosenUser(): UserAuthResponse | null {
-    return this.chosenUser;
-  }
-
-  public setOneUser(user: ContactController): void {
-    this.users.push(user);
+  public getChosenRecipient(): string | null {
+    return this.chosenRecipient;
   }
 
   public checkUserIsExist(userData: UserAuthResponse): boolean {
     console.log(this.users);
-    return Boolean(this.users.find(contact => contact.userData.login === userData.login));
+    return Boolean(this.users.find(contact => contact.login === userData.login));
   }
 
   public updateOneUser(userData: UserAuthResponse): ContactController {
-    const updatedUser = isNotNullable(this.users.find(contact => contact.userData.login === userData.login));
-    updatedUser.userData.isLogined = userData.isLogined;
+    const updatedUser = isNotNullable(this.users.find(contact => contact.login === userData.login));
+    updatedUser.isLogined = userData.isLogined;
     return updatedUser;
   }
 
@@ -63,6 +78,23 @@ export class StateService {
   public getUndeliveredMessages(): MessageController[] {
     const messages = this.history.filter(msgController => msgController.isDelivered === false);
     return messages;
+  }
+
+  public getUnreadMessages(): MessageController[] {
+    const messages = this.history.filter(
+      msgController => msgController.isReaded === false && msgController.to === this.chatOwner
+    );
+    return messages;
+  }
+
+  public getMessageById(id: string): MessageController | undefined {
+    const message = this.history.find(msgController => msgController.id === id);
+    return message;
+  }
+
+  public readMessages(login: string): void {
+    const updatedUser = isNotNullable(this.users.find(contact => contact.login === login));
+    updatedUser.setUnreadMessages(0);
   }
 }
 

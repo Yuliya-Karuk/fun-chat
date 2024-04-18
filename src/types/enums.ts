@@ -9,6 +9,7 @@ export enum ResponseTypes {
   'ERROR' = 'ERROR',
   'MSG_FROM_USER' = 'MSG_FROM_USER',
   'MSG_DELIVER' = 'MSG_DELIVER',
+  'MSG_READ' = 'MSG_READ',
 }
 
 export enum PagesNames {

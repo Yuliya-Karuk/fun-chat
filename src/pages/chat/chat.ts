@@ -4,7 +4,6 @@ import { UserAuthRequest } from '../../app/model/auth';
 import { WS } from '../../app/ws/ws';
 import { router } from '../../router/router';
 import { Routes } from '../../router/router.types';
-import { stateStorage } from '../../services/state.service';
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
@@ -42,8 +41,6 @@ export class Chat {
   }
 
   private setUserData(userData: UserAuthRequest): void {
-    stateStorage.setUser(userData);
-
     this.view.setUserName(userData.login);
   }
 

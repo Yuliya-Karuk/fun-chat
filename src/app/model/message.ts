@@ -61,3 +61,31 @@ export interface MessageDeliveredResponse {
     message: MessageDelivered;
   };
 }
+
+export interface MessageReadRequest {
+  id: string;
+  type: ResponseTypes;
+  payload: {
+    message: Pick<Message, 'id'>;
+  };
+}
+
+export type MessageRead = Pick<Message, 'id'> & {
+  status: Pick<MessageStatus, 'isReaded'>;
+};
+
+export interface MessageReadResponse {
+  id: string;
+  type: ResponseTypes;
+  payload: {
+    message: MessageRead;
+  };
+}
+
+export interface MessageIsReadedResponse {
+  id: null;
+  type: ResponseTypes;
+  payload: {
+    message: MessageRead;
+  };
+}

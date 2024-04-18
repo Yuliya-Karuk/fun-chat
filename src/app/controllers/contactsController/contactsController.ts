@@ -2,9 +2,7 @@ import { Contacts } from '../../../components/contacts/contacts';
 import { stateStorage } from '../../../services/state.service';
 import { ResponseTypes } from '../../../types/enums';
 import { eventBus } from '../../../utils/eventBus';
-import { isNotNullable } from '../../../utils/utils';
 import { ContactAuthResponse, UserAuthResponse } from '../../model/auth';
-import { MessageResponse } from '../../model/message';
 import { UsersActiveResponse, UsersInactiveResponse } from '../../model/users';
 import { WS } from '../../ws/ws';
 import { ContactController } from '../contactController/contactController';
@@ -16,55 +14,70 @@ export class ContactsController {
     this.view = new Contacts();
 
     eventBus.subscribe('goToChatPage', () => this.setUsers());
-    eventBus.subscribe('getActiveUsers', (data: UsersActiveResponse) => this.getActiveUsers(data));
-    eventBus.subscribe('getInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
+    eventBus.subscribe('receivedActiveUsers', (data: UsersActiveResponse) => this.getActiveUsers(data));
+    eventBus.subscribe('receivedInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
+    eventBus.subscribe('receivedAllUser', (data: UserAuthResponse[]) => this.createContacts(data));
     eventBus.subscribe('changeActivityUsers', (data: ContactAuthResponse) => this.changeActivityUsers(data));
-    eventBus.subscribe('getReceivedMessage', (data: MessageResponse) => this.setUnreadMessages(data));
   }
 
   private setUsers(): void {
-    const request = {
+    const requestActiveUsers = {
       id: crypto.randomUUID(),
       type: ResponseTypes.USER_ACTIVE,
       payload: null,
     };
 
-    const request2 = {
+    const requestInactiveUsers = {
       id: crypto.randomUUID(),
       type: ResponseTypes.USER_INACTIVE,
       payload: null,
     };
 
-    WS.getActiveUsers(request);
-    WS.getInactiveUsers(request2);
+    WS.getActiveUsers(requestActiveUsers);
+    WS.getInactiveUsers(requestInactiveUsers);
   }
 
   private getActiveUsers(activeUsersData: UsersActiveResponse): void {
     const { users } = activeUsersData.payload;
-    this.setContacts(users, false);
+
+    stateStorage.setRecipientData(users, false);
+    // this.setContacts(users, false);
   }
 
   private getInactiveUsers(inactiveUsersData: UsersActiveResponse): void {
     const { users } = inactiveUsersData.payload;
-    this.setContacts(users, true);
+
+    stateStorage.setRecipientData(users, true);
+    // this.setContacts(users, true);
   }
 
-  private setContacts(users: UserAuthResponse[], isLastResponse: boolean): void {
-    users.forEach(el => {
-      if (el.login !== stateStorage.getUser().login) {
-        const contact = new ContactController(el);
+  private createContacts(recipientsData: UserAuthResponse[]): void {
+    recipientsData.forEach(el => {
+      if (el.login !== stateStorage.getChatOwner()) {
+        const request = {
+          id: crypto.randomUUID(),
+          type: ResponseTypes.MSG_FROM_USER,
+          payload: {
+            user: {
+              login: el.login,
+            },
+          },
+        };
 
-        stateStorage.setOneUser(contact);
+        const contact = new ContactController(el, request.id);
+
+        WS.getHistory(request);
+        stateStorage.setOneRecipient(contact);
       }
     });
 
-    if (isLastResponse) {
-      this.renderContacts();
-    }
+    this.renderContacts();
   }
 
   private renderContacts(): void {
+    console.log(this.view.contacts);
     this.view.clearContacts();
+    console.log(this.view.contacts);
 
     stateStorage.getUsers().forEach(user => {
       this.view.contacts.append(user.view.getNode());
@@ -87,17 +100,17 @@ export class ContactsController {
       stateStorage.setOneUser(updatedUser);
     }
 
-    if (updatedUser.userData.isLogined) {
+    if (updatedUser.isLogined) {
       this.view.contacts.prepend(updatedUser.view.getNode());
     } else {
       this.view.contacts.append(updatedUser.view.getNode());
     }
   }
 
-  private setUnreadMessages(data: MessageResponse): void {
-    const users = stateStorage.getUsers();
-    const author = isNotNullable(users.find(user => user.userData.login === data.payload.message.from));
-    const { unreadMessages } = author;
-    author.setUnreadMessages(unreadMessages + 1);
-  }
+  // private setUnreadMessages(data: MessageResponse): void {
+  //   const users = stateStorage.getUsers();
+  //   const author = isNotNullable(users.find(user => user.userData.login === data.payload.message.from));
+  //   const { unreadMessages } = author;
+  //   author.setUnreadMessages(unreadMessages + 1);
+  // }
 }

@@ -60,4 +60,8 @@ export class MessageView extends BaseComponent {
   public setDeliveredStatus(): void {
     this.status.innerText = 'Delivered';
   }
+
+  public setReadStatus(): void {
+    this.status.innerText = 'Read';
+  }
 }

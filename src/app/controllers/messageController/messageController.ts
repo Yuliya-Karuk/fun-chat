@@ -1,7 +1,7 @@
 import { MessageView } from '../../../components/message/message';
 import { eventBus } from '../../../utils/eventBus';
 import { prepareDateFormat } from '../../../utils/utils';
-import { Message } from '../../model/message';
+import { Message, MessageIsReadedResponse, MessageReadResponse } from '../../model/message';
 
 export class MessageController {
   public view: MessageView = new MessageView();
@@ -11,7 +11,7 @@ export class MessageController {
   private text: string;
   private datetime: number;
   public isDelivered: boolean;
-  private isReaded: boolean;
+  public isReaded: boolean;
   private isEdited: boolean;
   private isOwn: boolean;
 
@@ -29,6 +29,8 @@ export class MessageController {
     this.setView();
 
     eventBus.subscribe('deliverMessage', () => this.setMessageDelivered());
+    eventBus.subscribe('ReceivedMSGIsRead', (data: MessageReadResponse) => this.setReceivedMessageRead(data));
+    eventBus.subscribe('MSGRead', (data: MessageIsReadedResponse) => this.setSendedMessageRead(data));
   }
 
   private setView(): void {
@@ -37,6 +39,20 @@ export class MessageController {
   }
 
   public setMessageDelivered(): void {
+    this.isDelivered = true;
     this.view.setDeliveredStatus();
+  }
+
+  public setSendedMessageRead(data: MessageIsReadedResponse): void {
+    if (data.payload.message.id === this.id) {
+      this.isReaded = true;
+      this.view.setReadStatus();
+    }
+  }
+
+  public setReceivedMessageRead(data: MessageReadResponse): void {
+    if (data.payload.message.id === this.id) {
+      this.isReaded = true;
+    }
   }
 }

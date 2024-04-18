@@ -3,7 +3,7 @@ import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { AuthRequest } from '../model/auth';
-import { MessageHistoryRequest, MessageRequest } from '../model/message';
+import { MessageHistoryRequest, MessageReadRequest, MessageRequest } from '../model/message';
 import { UsersActiveRequest, UsersInactiveRequest } from '../model/users';
 
 export class WebSocketHandler {
@@ -41,7 +41,7 @@ export class WebSocketHandler {
     if (response.type === ResponseTypes.USER_LOGIN) {
       if (!StorageService.isSavedUser()) {
         eventBus.emit('saveUserData', response);
-        eventBus.emit('clearStateUsers', response);
+        eventBus.emit('clearState', response);
       }
 
       eventBus.emit('authorizeUser', response);
@@ -52,11 +52,11 @@ export class WebSocketHandler {
     }
 
     if (response.type === ResponseTypes.USER_ACTIVE) {
-      eventBus.emit('getActiveUsers', response);
+      eventBus.emit('receivedActiveUsers', response);
     }
 
     if (response.type === ResponseTypes.USER_INACTIVE) {
-      eventBus.emit('getInactiveUsers', response);
+      eventBus.emit('receivedInactiveUsers', response);
     }
 
     if (response.type === ResponseTypes.USER_EXTERNAL_LOGIN || response.type === ResponseTypes.USER_EXTERNAL_LOGOUT) {
@@ -76,11 +76,19 @@ export class WebSocketHandler {
     }
 
     if (response.type === ResponseTypes.MSG_FROM_USER) {
-      eventBus.emit('getHistory', response);
+      eventBus.emit('receivedHistory', response);
     }
 
     if (response.type === ResponseTypes.MSG_DELIVER) {
       eventBus.emit('MSGDelivered', response);
+    }
+
+    if (response.type === ResponseTypes.MSG_READ && response.id !== null) {
+      eventBus.emit('ReceivedMSGIsRead', response);
+    }
+
+    if (response.type === ResponseTypes.MSG_READ && response.id === null) {
+      eventBus.emit('MSGRead', response);
     }
   }
 
@@ -97,6 +105,10 @@ export class WebSocketHandler {
   }
 
   public getHistory(message: MessageHistoryRequest): void {
+    this.ws.send(JSON.stringify(message));
+  }
+
+  public sendMessageRead(message: MessageReadRequest): void {
     this.ws.send(JSON.stringify(message));
   }
 }

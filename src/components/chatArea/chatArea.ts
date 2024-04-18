@@ -9,9 +9,9 @@ export class ChatArea extends BaseComponent {
   private messagesArea: HTMLDivElement;
   private userIcon: HTMLDivElement;
   private userLogin: HTMLDivElement;
-  private messageInput: HTMLInputElement;
+  public messageInput: HTMLInputElement;
   public messageButton: HTMLButtonElement;
-  private messagesHistory: HTMLDivElement;
+  public messagesHistory: HTMLDivElement;
   private startHistory: HTMLDivElement;
 
   constructor() {
@@ -62,9 +62,16 @@ export class ChatArea extends BaseComponent {
     this.appendChildren([selectedUserContainer, this.messagesArea, this.messageForm]);
   }
 
-  public enableMessageForm(): void {
+  public enableMessageInput(): void {
     this.messageInput.removeAttribute('disabled');
+  }
+
+  public enableMessageButton(): void {
     this.messageButton.removeAttribute('disabled');
+  }
+
+  public disableMessageButton(): void {
+    this.messageButton.setAttribute('disabled', 'disabled');
   }
 
   public getMessageInputValue(): string {
@@ -90,12 +97,17 @@ export class ChatArea extends BaseComponent {
   }
 
   public renderNewMessage(msg: HTMLElement): void {
+    if (this.messagesHistory.contains(this.startHistory)) {
+      this.messagesHistory.removeChild(this.startHistory);
+    }
+
     this.messagesHistory.append(msg);
     msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   public clearPreviousUser(): void {
     this.messagesArea.classList.remove('messages-area_chosen');
+    this.removeMessagesHistory();
 
     this.userLogin.innerText = '';
     this.userIcon.className = `selected-icon`;
