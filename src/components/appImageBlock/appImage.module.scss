@@ -1,12 +1,5 @@
 .app-content {
   @include flex(flex-start, center, column);
-  align-self: center;
-  row-gap: 10px;
-  width: 400px;
-  min-height: 540px;
-  height: 50%;
-  background-color: var(--color-black);
-  border-radius: 20px;
 
   @include media-tablet {
     width: 40%;
@@ -14,32 +7,36 @@
 
   @include media-tablet-mini {
     width: 300px;
-    min-height: unset;
     height: unset;
+    min-height: unset;
   }
+  row-gap: 10px;
+  align-self: center;
+  width: 400px;
+  height: 50%;
+  min-height: 450px;
+  background-color: var(--color-black);
+  border-radius: 20px;
 
-  @media (max-width: 600px) and (max-height: 700px) {
+  @media (width <= 600px) and (height <= 700px) {
     display: none;
   }
 }
 
 .app-image {
-  width: 100%;
-  max-height: 400px;
-  min-height: 250px;
-  background: center no-repeat url('../../img/auth_image.jpg');
-  background-size: cover;
-  border-radius: 20px 20px 0 0;
-
   @include media-tablet {
     height: 250px;
   }
+  width: 100%;
+  min-height: 250px;
+  max-height: 400px;
+  background: center no-repeat url('../../img/auth_image.jpg');
+  background-size: cover;
+  border-radius: 20px 20px 0 0;
 }
 
 .app-text-container {
   @include flex(flex-start, center, column);
-  row-gap: 40px;
-  padding: 40px 20px;
 
   @include media-tablet {
     row-gap: 20px;
@@ -49,27 +46,29 @@
   @include media-tablet-mini {
     display: none;
   }
+  row-gap: 40px;
+  padding: 40px 20px;
 }
 
 .app-heading {
   @include font(3rem, 700, normal, -0.02em);
-  font-family: var(--second-family);
-  color: var(--color-font-light-primary);
 
   @include media-tablet {
-    font-size: 2.4rem;
+    font-size: 2.3rem;
   }
+  font-family: var(--second-family);
+  color: var(--color-font-light-primary);
 }
 
 .app-text {
   @include font(1.6rem, 600, 1, -0.02em);
-  position: relative;
-  font-family: var(--second-family);
-  color: var(--color-font-light-primary);
 
   @include media-tablet {
     font-size: 1.2rem;
   }
+  position: relative;
+  font-family: var(--second-family);
+  color: var(--color-font-light-primary);
 
   &::after {
     content: '';

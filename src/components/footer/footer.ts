@@ -20,7 +20,7 @@ export class Footer extends BaseComponent {
     ]);
     const githubImg = createElementWithProperties('span', [styles.footerImgGithub]);
 
-    const year = createElementWithProperties('span', [styles.footerYear], undefined, [{ innerText: '2024' }]);
+    const year = createElementWithProperties('span', [], undefined, [{ innerText: '2024' }]);
 
     const linkRS = createElementWithProperties('a', [styles.footerLink], {
       href: `${this.RSLink}`,

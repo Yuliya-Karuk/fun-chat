@@ -24,7 +24,7 @@ export class Header extends BaseComponent {
 
   private createContent(): void {
     const headerLogo = createElementWithProperties('div', [styles.headerLogo], undefined, undefined, [
-      createElementWithProperties('img', [], {
+      createElementWithProperties('img', [styles.headerImg], {
         alt: 'logo image',
         src: `${logoPath}`,
       }),

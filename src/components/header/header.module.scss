@@ -11,6 +11,11 @@
   @extend %container;
 
   @include flex(flex-start, center);
+
+  @include media-mobile {
+    gap: 10px;
+    padding: 0 10px;
+  }
   gap: 20px;
   height: 100%;
   padding: 0 20px;
@@ -18,16 +23,35 @@
 
 .header-logo {
   @include flex(center, center);
+
+  @include media-tablet-mini {
+    margin: 0;
+  }
   column-gap: 10px;
   margin: 0 20px;
 }
 
+.header-img {
+  @include media-mobile {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 .header-title {
   @include font(2rem, 700, 1.2);
+
+  @include media-mobile {
+    font-size: 1.4rem;
+  }
 }
 
 .header-name {
   @include font(3rem, 700, 1.2);
+
+  @include media-tablet-mini {
+    font-size: 1.6rem;
+  }
   margin-right: auto;
   text-transform: uppercase;
 }

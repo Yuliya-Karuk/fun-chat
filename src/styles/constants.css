@@ -16,4 +16,6 @@
   --color-background-white-transparent: rgb(255 255 255 / 30%);
   --color-shadow-dark: rgb(0 0 0 / 40%);
   --color-shadow-light: rgb(255 255 255 / 40%);
+  --color-light-message: #bdd2b6;
+  --color-dark-message: #26272d;
 }

@@ -5,7 +5,7 @@
   min-width: 150px;
   max-width: 80%;
   padding: 5px;
-  background: #bdd2b6;
+  background: var(--color-light-message);
   border-radius: 4px 0 4px 4px;
 
   &::after {
@@ -17,22 +17,22 @@
 
   &_true {
     align-self: flex-end;
-    color: #26272d;
+    color: var(--color-dark-message);
 
     &::after {
       right: -10px;
-      border-top: 10px solid #bdd2b6;
+      border-top: 10px solid var(--color-light-message);
     }
   }
 
   &_false {
     align-self: flex-start;
-    background: #26272d;
+    background: var(--color-dark-message);
 
     &::after {
       top: 0;
       left: -10px;
-      border-top: 10px solid #26272d;
+      border-top: 10px solid var(--color-dark-message);
     }
   }
 }
@@ -40,10 +40,23 @@
 .message-info-container {
   @include font(0.8rem, 700, normal);
   @include flex(space-between, center);
+
+  @include media-mobile {
+    font-weight: 500;
+  }
 }
 
 .message-text {
   @include font(1.6rem, 700, normal);
+
+  @include media-tablet {
+    font-size: 1.4rem;
+  }
+
+  @include media-tablet-mini {
+    font-size: 1.2rem;
+  }
+  word-wrap: break-word;
 }
 
 .messageStatusContainer {
@@ -56,9 +69,18 @@
 
 .message-status {
   @include font(0.8rem, 700, normal);
+
+  @include media-mobile {
+    font-weight: 500;
+  }
 }
 
 .message-status-icon {
+
+  @include media-tablet-mini {
+    width: 15px;
+    height: 15px;
+  }
   width: 20px;
   height: 20px;
 

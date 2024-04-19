@@ -1,5 +1,13 @@
 .contacts-container {
   @include flex(flex-start, center, column);
+
+  @include media-tablet {
+    width: 33%;
+  }
+
+  @include media-mobile {
+    gap: 0;
+  }
   row-gap: 10px;
   align-self: stretch;
   width: 25%;
@@ -9,11 +17,15 @@
 
 .contacts {
   @include flex(flex-start, center, column);
+
+  @include media-tablet-mini {
+    height: calc(100vh - 190px);
+  }
   overflow-y: auto;
   row-gap: 5px;
   align-self: stretch;
   width: 100%;
-  height: calc(100vh - 110px - 40px - 50px - 20px);
+  height: calc(100vh - 220px);
 }
 
 .contacts::-webkit-scrollbar {
@@ -59,6 +71,10 @@
 
 .search-input {
   @include font(2rem, 700, 1.2);
+
+  @include media-tablet {
+    font-size: 1.4rem;
+  }
   width: calc(100% - 40px);
   height: 100%;
   padding: 8px 12px;

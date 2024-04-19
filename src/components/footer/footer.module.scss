@@ -9,6 +9,11 @@
   @extend %container;
 
   @include flex(space-between, center);
+  @include font(2rem, 900, 1.05);
+
+  @include media-mobile {
+    font-size: 1.4rem;
+  }
   height: 100%;
   padding: 0 20px;
 }
@@ -17,8 +22,6 @@
   @extend %transition;
 
   @include flex(center, center);
-
-  @include font(2rem, 900, 1.05);
 
   @include media-hover {
     &:hover {
@@ -43,8 +46,4 @@
   width: 86px;
   height: 32px;
   background: center no-repeat url('../../img/rs.svg');
-}
-
-.footer-year {
-  @include font(2rem, 900, 1.05);
 }
