@@ -80,4 +80,9 @@ export class AuthForm extends BaseComponent {
     const password = String(this.passwordInput.value);
     return { login, password };
   }
+
+  public clearInputsValues(): void {
+    this.nameInput.value = '';
+    this.passwordInput.value = '';
+  }
 }

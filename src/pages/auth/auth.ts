@@ -71,5 +71,6 @@ export class Auth {
 
   private saveUserData(): void {
     StorageService.saveData(this.request.payload.user);
+    this.view.clearInputs();
   }
 }

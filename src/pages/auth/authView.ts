@@ -18,4 +18,8 @@ export class AuthView extends BaseComponent {
   public renderContent(): void {
     this.appendChildren([this.appImage.getNode(), this.authForm.getNode()]);
   }
+
+  public clearInputs(): void {
+    this.authForm.clearInputsValues();
+  }
 }
