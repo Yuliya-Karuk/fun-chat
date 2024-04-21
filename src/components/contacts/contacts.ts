@@ -7,7 +7,7 @@ export class Contacts extends BaseComponent {
   public contacts: HTMLDivElement;
   public searchInput: HTMLInputElement;
   public searchButton: HTMLButtonElement;
-  private searchForm: HTMLFormElement;
+  public searchForm: HTMLFormElement;
 
   constructor() {
     super('div', [styles.contactsContainer]);

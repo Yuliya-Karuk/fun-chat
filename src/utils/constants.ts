@@ -2,13 +2,13 @@ import { DomElementAttribute } from '../types/interfaces';
 import { Inputs } from '../types/types';
 
 export const AuthInputs: Record<Inputs, DomElementAttribute> = {
-  name: {
-    id: 'name',
+  login: {
+    id: 'login',
     type: 'text',
-    name: 'name',
+    name: 'login',
     required: 'required',
     minlength: '3',
-    pattern: '^[A-Z][a-zA-Z\\-]+$',
+    pattern: '^[a-zA-Z0-9\\-]+$',
     autocomplete: 'off',
   },
   password: {

@@ -55,4 +55,12 @@ export class ContactController {
       this.setUnreadMessages(0);
     }
   }
+
+  public setInvisible(): void {
+    this.view.setInvisible();
+  }
+
+  public setVisible(): void {
+    this.view.setVisible();
+  }
 }

@@ -23,8 +23,7 @@ export class StateService {
   }
 
   private clearState(): void {
-    this.users = [];
-    this.recipientsData = [];
+    this.clearUsers();
     this.chosenRecipient = null;
   }
 
@@ -34,6 +33,11 @@ export class StateService {
 
   public getChatOwner(): string {
     return this.chatOwner;
+  }
+
+  public clearUsers(): void {
+    this.users = [];
+    this.recipientsData = [];
   }
 
   public setRecipientData(users: UserAuthResponse[], isInactive: boolean): void {

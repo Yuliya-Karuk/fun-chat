@@ -13,10 +13,13 @@
   width: 100%;
   height: 50px;
   padding: 5px 10px;
+
+  &_hidden {
+    display: none;
+  }
 }
 
 .contact-icon {
-
   @include media-tablet-mini {
     width: 30px;
     height: 30px;

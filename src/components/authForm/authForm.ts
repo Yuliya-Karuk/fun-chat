@@ -6,9 +6,9 @@ import { BaseComponent } from '../baseComponent';
 import styles from './authForm.module.scss';
 
 export class AuthForm extends BaseComponent {
-  public nameInput: HTMLInputElement;
+  public loginInput: HTMLInputElement;
   public passwordInput: HTMLInputElement;
-  public nameError: HTMLSpanElement;
+  public loginError: HTMLSpanElement;
   public passwordError: HTMLSpanElement;
   public aboutLink: HTMLAnchorElement;
   public submitButton: HTMLButtonElement;
@@ -20,27 +20,27 @@ export class AuthForm extends BaseComponent {
   }
 
   private renderContent(): void {
-    this.nameInput = createElementWithProperties('input', [styles.authInput], AuthInputs.name);
+    this.loginInput = createElementWithProperties('input', [styles.authInput], AuthInputs.login);
     this.passwordInput = createElementWithProperties('input', [styles.authInput], AuthInputs.password);
 
-    const nameLabel = createElementWithProperties('label', [styles.authLabel], { for: 'name' }, [
-      { innerText: 'Name' },
+    const loginLabel = createElementWithProperties('label', [styles.authLabel], { for: 'login' }, [
+      { innerText: 'Login' },
     ]);
-    const surnameLabel = createElementWithProperties('label', [styles.authLabel], { for: 'password' }, [
+    const passwordLabel = createElementWithProperties('label', [styles.authLabel], { for: 'password' }, [
       { innerText: 'Password' },
     ]);
 
-    this.nameError = createElementWithProperties('span', [styles.authError]);
+    this.loginError = createElementWithProperties('span', [styles.authError]);
     this.passwordError = createElementWithProperties('span', [styles.authError]);
 
     const title = createElementWithProperties('h2', [styles.authTitle], undefined, [{ innerText: 'Authorization' }]);
 
     this.appendChildren([
       title,
-      nameLabel,
-      this.nameInput,
-      this.nameError,
-      surnameLabel,
+      loginLabel,
+      this.loginInput,
+      this.loginError,
+      passwordLabel,
       this.passwordInput,
       this.passwordError,
       this.renderButtons(),
@@ -68,7 +68,7 @@ export class AuthForm extends BaseComponent {
   }
 
   public setSubmitButton(): void {
-    if (this.nameInput.checkValidity() && this.passwordInput.checkValidity()) {
+    if (this.loginInput.checkValidity() && this.passwordInput.checkValidity()) {
       this.submitButton.removeAttribute('disabled');
     } else {
       this.submitButton.setAttribute('disabled', 'disabled');
@@ -76,13 +76,13 @@ export class AuthForm extends BaseComponent {
   }
 
   public getInputsValues(): UserAuthRequest {
-    const login = String(this.nameInput.value);
+    const login = String(this.loginInput.value);
     const password = String(this.passwordInput.value);
     return { login, password };
   }
 
   public clearInputsValues(): void {
-    this.nameInput.value = '';
+    this.loginInput.value = '';
     this.passwordInput.value = '';
   }
 }

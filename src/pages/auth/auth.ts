@@ -27,7 +27,9 @@ export class Auth {
   }
 
   private bindListeners(): void {
-    this.view.authForm.nameInput.addEventListener('input', () => this.validateLoginInput(this.view.authForm.nameInput));
+    this.view.authForm.loginInput.addEventListener('input', () =>
+      this.validateLoginInput(this.view.authForm.loginInput)
+    );
 
     this.view.authForm.passwordInput.addEventListener('input', () =>
       this.validateLoginInput(this.view.authForm.passwordInput)

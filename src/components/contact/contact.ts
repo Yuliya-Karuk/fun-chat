@@ -33,4 +33,12 @@ export class Contact extends BaseComponent {
       this.unreadMessages.innerText = '';
     }
   }
+
+  public setInvisible(): void {
+    this.node.classList.add('contact_hidden');
+  }
+
+  public setVisible(): void {
+    this.node.classList.remove('contact_hidden');
+  }
 }

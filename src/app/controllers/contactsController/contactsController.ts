@@ -19,6 +19,12 @@ export class ContactsController {
     eventBus.subscribe('receivedAllUser', (data: UserAuthResponse[]) => this.createContacts(data));
     eventBus.subscribe('changeActivityUsers', (data: ContactAuthResponse) => this.changeActivityUsers(data));
     eventBus.subscribe('goToLoginPage', () => this.clearPreviousUser());
+
+    this.bindListeners();
+  }
+
+  private bindListeners(): void {
+    this.view.searchInput.addEventListener('input', () => this.searchByName());
   }
 
   private setUsers(): void {
@@ -39,6 +45,8 @@ export class ContactsController {
   }
 
   private getActiveUsers(activeUsersData: UsersActiveResponse): void {
+    stateStorage.clearUsers();
+
     const { users } = activeUsersData.payload;
 
     stateStorage.setRecipientData(users, false);
@@ -119,6 +127,13 @@ export class ContactsController {
 
   private clearPreviousUser(): void {
     this.view.clearContacts();
-    console.log(this.view);
+  }
+
+  private searchByName(): void {
+    const searchValue = this.view.searchInput.value.toLowerCase();
+
+    stateStorage.getUsers().forEach(user => user.setInvisible());
+    const filteredUsers = stateStorage.getUsers().filter(user => user.login.toLowerCase().includes(searchValue));
+    filteredUsers.forEach(user => user.setVisible());
   }
 }
