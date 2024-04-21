@@ -4,13 +4,15 @@ import { ResponseTypes } from '../../../types/enums';
 import { eventBus } from '../../../utils/eventBus';
 import { isNotNullable } from '../../../utils/utils';
 import { ContactAuthResponse, UserAuthResponse } from '../../model/auth';
-import { Message, MessageHistoryResponse, MessageResponse } from '../../model/message';
+import { Message, MessageEdit, MessageHistoryResponse, MessageResponse } from '../../model/message';
 import { WS } from '../../ws/ws';
 import { MessageController } from '../messageController/messageController';
 
 export class DialogController {
   public view: ChatArea;
   private historyRequestId: string;
+  private isEditingMessage: boolean = false;
+  private editedMessageId: string;
 
   constructor() {
     this.view = new ChatArea();
@@ -24,6 +26,7 @@ export class DialogController {
     eventBus.subscribe('changeMessagesDelivered', (data: ContactAuthResponse) => this.setMessageDelivered(data));
     eventBus.subscribe('ReceivedMSGIsRead', () => this.view.removeDelimiter());
     eventBus.subscribe('goToLoginPage', () => this.clearPreviousUser());
+    eventBus.subscribe('editMessage', (data: MessageEdit) => this.handleMessageEditing(data));
   }
 
   private clearPreviousUser(): void {
@@ -66,9 +69,18 @@ export class DialogController {
   private sendMessageToUser(e: Event): void {
     e.preventDefault();
 
-    this.sendMessagesAreRead();
-
     const message = this.view.getMessageInputValue();
+
+    if (!this.isEditingMessage) {
+      this.sendMessagesAreRead();
+      this.sendNewMessage(message);
+    } else {
+      this.sendEditedMessage(message);
+      this.isEditingMessage = false;
+    }
+  }
+
+  private sendNewMessage(message: string): void {
     const request = {
       id: crypto.randomUUID(),
       type: ResponseTypes.MSG_SEND,
@@ -81,6 +93,21 @@ export class DialogController {
     };
 
     WS.sendUserMessage(request);
+  }
+
+  private sendEditedMessage(message: string): void {
+    const request = {
+      id: crypto.randomUUID(),
+      type: ResponseTypes.MSG_EDIT,
+      payload: {
+        message: {
+          id: this.editedMessageId,
+          text: message,
+        },
+      },
+    };
+
+    WS.sendEditedMessage(request);
   }
 
   private renderSentMessage(data: MessageResponse): void {
@@ -155,5 +182,11 @@ export class DialogController {
 
   private handleScrollMessages(): void {
     this.sendMessagesAreRead();
+  }
+
+  private handleMessageEditing(data: MessageEdit): void {
+    this.editedMessageId = data.id;
+    this.isEditingMessage = true;
+    this.view.setMessageInputValue(data.text);
   }
 }

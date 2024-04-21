@@ -3,7 +3,7 @@ import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { AuthRequest } from '../model/auth';
-import { MessageHistoryRequest, MessageReadRequest, MessageRequest } from '../model/message';
+import { MessageEditRequest, MessageHistoryRequest, MessageReadRequest, MessageRequest } from '../model/message';
 import { UsersActiveRequest, UsersInactiveRequest } from '../model/users';
 
 export class WebSocketHandler {
@@ -90,6 +90,14 @@ export class WebSocketHandler {
     if (response.type === ResponseTypes.MSG_READ && response.id === null) {
       eventBus.emit('MSGRead', response);
     }
+
+    if (response.type === ResponseTypes.MSG_EDIT && response.id !== null) {
+      eventBus.emit('MSGEdit', response);
+    }
+
+    if (response.type === ResponseTypes.MSG_EDIT && response.id === null) {
+      eventBus.emit('ReceivedMSGIsEdited', response);
+    }
   }
 
   public getActiveUsers(message: UsersActiveRequest): void {
@@ -109,6 +117,10 @@ export class WebSocketHandler {
   }
 
   public sendMessageRead(message: MessageReadRequest): void {
+    this.ws.send(JSON.stringify(message));
+  }
+
+  public sendEditedMessage(message: MessageEditRequest): void {
     this.ws.send(JSON.stringify(message));
   }
 }

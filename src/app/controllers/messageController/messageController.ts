@@ -1,7 +1,13 @@
 import { MessageView } from '../../../components/message/message';
 import { eventBus } from '../../../utils/eventBus';
-import { prepareDateFormat } from '../../../utils/utils';
-import { Message, MessageIsReadedResponse, MessageReadResponse } from '../../model/message';
+import { checkEventTarget, prepareDateFormat } from '../../../utils/utils';
+import {
+  Message,
+  MessageEditResponse,
+  MessageIsEditedResponse,
+  MessageIsReadedResponse,
+  MessageReadResponse,
+} from '../../model/message';
 
 export class MessageController {
   public view: MessageView = new MessageView();
@@ -14,6 +20,7 @@ export class MessageController {
   public isReaded: boolean;
   private isEdited: boolean;
   private isOwn: boolean;
+  private contextMenuIsShown: boolean = false;
 
   constructor(message: Message, isOwn: boolean) {
     this.id = message.id;
@@ -31,11 +38,39 @@ export class MessageController {
     eventBus.subscribe('deliverMessage', () => this.setMessageDelivered());
     eventBus.subscribe('ReceivedMSGIsRead', (data: MessageReadResponse) => this.setReceivedMessageRead(data));
     eventBus.subscribe('MSGRead', (data: MessageIsReadedResponse) => this.setSendedMessageRead(data));
+    eventBus.subscribe('MSGEdit', (data: MessageEditResponse) => this.setSendedMessageEdit(data));
+    eventBus.subscribe('ReceivedMSGIsEdited', (data: MessageIsEditedResponse) => this.setReceivedMessageEdited(data));
+    this.bindListeners();
+  }
+
+  private bindListeners(): void {
+    if (this.isOwn) {
+      this.view.getNode().addEventListener('click', () => this.handleShowContextMenu());
+      this.view.editButton.addEventListener('click', () => this.handleEditing());
+      // this.view.deleteButton.addEventListener('click', () => this.handleEditing());
+      document.addEventListener('click', (e: Event) => this.handleContextMenu(e));
+    }
+  }
+
+  private handleShowContextMenu(): void {
+    this.view.showContextMenu();
+    this.contextMenuIsShown = true;
+  }
+
+  private handleContextMenu(e: Event): void {
+    if (!this.view.getNode().contains(checkEventTarget(e.target)) && this.contextMenuIsShown) {
+      this.view.hideContextMenu();
+      this.contextMenuIsShown = false;
+    }
+  }
+
+  private handleEditing(): void {
+    eventBus.emit('editMessage', { id: this.id, text: this.text });
   }
 
   private setView(): void {
     const dateString = prepareDateFormat(this.datetime);
-    this.view.setContent(this.from, this.isOwn, dateString, this.text, this.isDelivered, this.isReaded);
+    this.view.setContent(this.from, this.isOwn, dateString, this.text, this.isDelivered, this.isReaded, this.isEdited);
   }
 
   public setMessageDelivered(): void {
@@ -51,8 +86,25 @@ export class MessageController {
   }
 
   public setReceivedMessageRead(data: MessageReadResponse): void {
-    if (data.payload.message.id === this.id) {
+    if (data.payload.message.id === this.id && !this.isOwn) {
       this.isReaded = true;
+    }
+  }
+
+  private setSendedMessageEdit(data: MessageEditResponse): void {
+    if (data.payload.message.id === this.id) {
+      this.isEdited = data.payload.message.status.isEdited;
+      this.text = data.payload.message.text;
+      this.view.setEditedMessage(this.isEdited, this.text);
+    }
+  }
+
+  // дублирование
+  private setReceivedMessageEdited(data: MessageIsEditedResponse): void {
+    if (data.payload.message.id === this.id && !this.isOwn) {
+      this.isEdited = data.payload.message.status.isEdited;
+      this.text = data.payload.message.text;
+      this.view.setEditedMessage(this.isEdited, this.text);
     }
   }
 }

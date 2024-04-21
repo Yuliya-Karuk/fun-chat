@@ -61,35 +61,62 @@
 
 .messageStatusContainer {
   @include flex(space-between, center);
+}
+
+.delivery-status {
+  @include font(0.8rem, 700, normal);
+
+  @include media-mobile {
+    font-weight: 500;
+  }
 
   .message_false & {
     display: none;
   }
 }
 
-.message-status {
+.edit-status {
   @include font(0.8rem, 700, normal);
 
   @include media-mobile {
     font-weight: 500;
   }
+  margin-left: auto;
 }
 
-.message-status-icon {
-  @include media-tablet-mini {
-    width: 15px;
-    height: 15px;
-  }
-  width: 20px;
-  height: 20px;
+.context-menu {
+  @include flex(center, center, column);
+  @include font(1.2rem, 700, normal);
+  position: absolute;
+  top: -45px;
+  left: -70px;
+  width: 100px;
+  color: var(--color-font-light-primary);
+  background: #4a4a4a;
+  border: 1px solid var(--color-font-light-secondary);
+  border-radius: 8px;
+}
 
-  &_delivered {
-    background: center no-repeat url('../../img/checked.svg');
-    background-size: contain;
+.context-button {
+  @extend %transition;
+
+  @include media-hover {
+    &:hover {
+      color: var(--color-bg-primary);
+      background-color: var(--color-font-light-secondary);
+    }
+  }
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border-radius: 0 0 8px 8px;
+
+  &:first-of-type {
+    border-bottom: 1px solid var(--color-font-light-primary);
+    border-radius: 8px 8px 0 0;
   }
 
-  &_read {
-    background: center no-repeat url('../../img/double-checked.svg');
-    background-size: contain;
+  &:active {
+    opacity: 0.7;
   }
 }

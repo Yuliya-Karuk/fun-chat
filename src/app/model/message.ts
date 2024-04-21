@@ -89,3 +89,32 @@ export interface MessageIsReadedResponse {
     message: MessageRead;
   };
 }
+
+export type MessageEdit = Pick<Message, 'id' | 'text'>;
+export type MessageEdited = Pick<Message, 'id' | 'text'> & {
+  status: Pick<MessageStatus, 'isEdited'>;
+};
+
+export interface MessageEditRequest {
+  id: string;
+  type: ResponseTypes;
+  payload: {
+    message: MessageEdit;
+  };
+}
+
+export interface MessageEditResponse {
+  id: string;
+  type: ResponseTypes;
+  payload: {
+    message: MessageEdited;
+  };
+}
+
+export interface MessageIsEditedResponse {
+  id: null;
+  type: ResponseTypes;
+  payload: {
+    message: MessageEdited;
+  };
+}

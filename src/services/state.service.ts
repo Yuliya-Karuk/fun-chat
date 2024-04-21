@@ -4,17 +4,12 @@ import { AuthResponse, UserAuthResponse } from '../app/model/auth';
 import { eventBus } from '../utils/eventBus';
 import { isNotNullable } from '../utils/utils';
 
-interface UnreadMessagesNumbers {
-  [login: string]: number;
-}
-
 export class StateService {
   private users: ContactController[] = [];
   private chatOwner: string;
   private recipientsData: UserAuthResponse[] = [];
   private chosenRecipient: string | null;
   private history: MessageController[] = [];
-  private unreadMessagesNumbers: UnreadMessagesNumbers;
 
   constructor() {
     eventBus.subscribe('clearState', () => this.clearState());

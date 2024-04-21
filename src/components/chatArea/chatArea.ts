@@ -14,7 +14,7 @@ export class ChatArea extends BaseComponent {
   public messagesHistory: HTMLDivElement;
   private startHistory: HTMLDivElement;
   private delimiter: HTMLDivElement;
-  private isDelimeterSet: boolean = false;
+  private isDelimiterSet: boolean = false;
 
   constructor() {
     super('div', [styles.chatArea]);
@@ -106,7 +106,12 @@ export class ChatArea extends BaseComponent {
     }
 
     this.messagesHistory.append(msg);
-    msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    if (!this.isDelimiterSet) {
+      msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      this.delimiter.scrollIntoView(true);
+    }
   }
 
   public clearPreviousUser(): void {
@@ -118,16 +123,21 @@ export class ChatArea extends BaseComponent {
   }
 
   public setDelimiter(): void {
-    if (!this.isDelimeterSet) {
+    if (!this.isDelimiterSet) {
       this.messagesHistory.append(this.delimiter);
-      this.isDelimeterSet = true;
+      this.isDelimiterSet = true;
+      this.delimiter.scrollIntoView(true);
     }
   }
 
   public removeDelimiter(): void {
     if (this.messagesHistory.contains(this.delimiter)) {
       this.messagesHistory.removeChild(this.delimiter);
-      this.isDelimeterSet = false;
+      this.isDelimiterSet = false;
     }
+  }
+
+  public setMessageInputValue(text: string): void {
+    this.messageInput.value = text;
   }
 }
