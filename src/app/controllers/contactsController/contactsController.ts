@@ -78,7 +78,6 @@ export class ContactsController {
       }
     });
 
-    console.log(this.view);
     this.renderContacts();
   }
 
@@ -93,15 +92,12 @@ export class ContactsController {
   private changeActivityUsers(data: ContactAuthResponse): void {
     let updatedUser;
 
-    console.log('check', data.payload.user, stateStorage.checkUserIsExist(data.payload.user));
     if (stateStorage.checkUserIsExist(data.payload.user)) {
-      console.log('update');
       updatedUser = stateStorage.updateOneUser(data.payload.user);
 
       updatedUser.updateUserVisibility();
       this.view.contacts.removeChild(updatedUser.view.getNode());
     } else {
-      console.log('create new');
       const request = {
         id: crypto.randomUUID(),
         type: ResponseTypes.MSG_FROM_USER,

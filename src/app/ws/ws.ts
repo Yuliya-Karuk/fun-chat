@@ -39,7 +39,7 @@ export class WebSocketHandler {
   public handleMessage(e: MessageEvent): void {
     const { data } = e;
     const response = JSON.parse(data);
-    console.log(response);
+    // console.log(response);
 
     if (response.type === ResponseTypes.ERROR) {
       eventBus.emit('authError', response.payload.error);

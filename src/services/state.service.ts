@@ -57,7 +57,6 @@ export class StateService {
   }
 
   public checkUserIsExist(userData: UserAuthResponse): boolean {
-    console.log(this.users);
     return Boolean(this.users.find(contact => contact.login === userData.login));
   }
 
