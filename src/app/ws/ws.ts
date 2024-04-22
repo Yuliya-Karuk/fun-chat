@@ -3,7 +3,13 @@ import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
 import { AuthRequest } from '../model/auth';
-import { MessageEditRequest, MessageHistoryRequest, MessageReadRequest, MessageRequest } from '../model/message';
+import {
+  MessageDeleteRequest,
+  MessageEditRequest,
+  MessageHistoryRequest,
+  MessageReadRequest,
+  MessageRequest,
+} from '../model/message';
 import { UsersActiveRequest, UsersInactiveRequest } from '../model/users';
 
 export class WebSocketHandler {
@@ -29,6 +35,7 @@ export class WebSocketHandler {
     }
   }
 
+  // сделать нормальный маппинг по массиву!!!!!
   public handleMessage(e: MessageEvent): void {
     const { data } = e;
     const response = JSON.parse(data);
@@ -98,6 +105,14 @@ export class WebSocketHandler {
     if (response.type === ResponseTypes.MSG_EDIT && response.id === null) {
       eventBus.emit('ReceivedMSGIsEdited', response);
     }
+
+    if (response.type === ResponseTypes.MSG_DELETE && response.id !== null) {
+      eventBus.emit('MSGDelete', response);
+    }
+
+    if (response.type === ResponseTypes.MSG_DELETE && response.id === null) {
+      eventBus.emit('ReceivedMSGIsDeleted', response);
+    }
   }
 
   public getActiveUsers(message: UsersActiveRequest): void {
@@ -121,6 +136,10 @@ export class WebSocketHandler {
   }
 
   public sendEditedMessage(message: MessageEditRequest): void {
+    this.ws.send(JSON.stringify(message));
+  }
+
+  public sendDeletedMessage(message: MessageDeleteRequest): void {
     this.ws.send(JSON.stringify(message));
   }
 }

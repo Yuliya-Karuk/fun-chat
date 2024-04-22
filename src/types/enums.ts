@@ -11,6 +11,7 @@ export enum ResponseTypes {
   'MSG_DELIVER' = 'MSG_DELIVER',
   'MSG_READ' = 'MSG_READ',
   'MSG_EDIT' = 'MSG_EDIT',
+  'MSG_DELETE' = 'MSG_DELETE',
 }
 
 export enum PagesNames {

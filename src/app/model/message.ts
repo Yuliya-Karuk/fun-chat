@@ -13,6 +13,7 @@ export interface MessageStatus {
   isDelivered: boolean;
   isReaded: boolean;
   isEdited: boolean;
+  isDeleted: boolean;
 }
 
 export interface Message {
@@ -116,5 +117,34 @@ export interface MessageIsEditedResponse {
   type: ResponseTypes;
   payload: {
     message: MessageEdited;
+  };
+}
+
+export type MessageDelete = Pick<Message, 'id'>;
+export type MessageDeleted = Pick<Message, 'id'> & {
+  status: Pick<MessageStatus, 'isDeleted'>;
+};
+
+export interface MessageDeleteRequest {
+  id: string;
+  type: ResponseTypes;
+  payload: {
+    message: MessageDelete;
+  };
+}
+
+export interface MessageDeleteResponse {
+  id: string;
+  type: ResponseTypes;
+  payload: {
+    message: MessageDeleted;
+  };
+}
+
+export interface MessageIsDeletedResponse {
+  id: null;
+  type: ResponseTypes;
+  payload: {
+    message: MessageDeleted;
   };
 }

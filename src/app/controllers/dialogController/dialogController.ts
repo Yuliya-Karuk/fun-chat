@@ -4,7 +4,15 @@ import { ResponseTypes } from '../../../types/enums';
 import { eventBus } from '../../../utils/eventBus';
 import { isNotNullable } from '../../../utils/utils';
 import { ContactAuthResponse, UserAuthResponse } from '../../model/auth';
-import { Message, MessageEdit, MessageHistoryResponse, MessageResponse } from '../../model/message';
+import {
+  Message,
+  MessageDelete,
+  MessageDeleteResponse,
+  MessageEdit,
+  MessageHistoryResponse,
+  MessageIsDeletedResponse,
+  MessageResponse,
+} from '../../model/message';
 import { WS } from '../../ws/ws';
 import { MessageController } from '../messageController/messageController';
 
@@ -13,6 +21,7 @@ export class DialogController {
   private historyRequestId: string;
   private isEditingMessage: boolean = false;
   private editedMessageId: string;
+  private deletedMessageId: string;
 
   constructor() {
     this.view = new ChatArea();
@@ -27,6 +36,9 @@ export class DialogController {
     eventBus.subscribe('ReceivedMSGIsRead', () => this.view.removeDelimiter());
     eventBus.subscribe('goToLoginPage', () => this.clearPreviousUser());
     eventBus.subscribe('editMessage', (data: MessageEdit) => this.handleMessageEditing(data));
+    eventBus.subscribe('deleteMessage', (data: MessageDelete) => this.handleMessageDeleting(data));
+    eventBus.subscribe('MSGDelete', (data: MessageDeleteResponse) => this.deleteMessage(data));
+    eventBus.subscribe('ReceivedMSGIsDeleted', (data: MessageIsDeletedResponse) => this.deleteMessage(data));
   }
 
   private clearPreviousUser(): void {
@@ -188,5 +200,30 @@ export class DialogController {
     this.editedMessageId = data.id;
     this.isEditingMessage = true;
     this.view.setMessageInputValue(data.text);
+  }
+
+  private handleMessageDeleting(data: MessageDelete): void {
+    this.deletedMessageId = data.id;
+    const request = {
+      id: crypto.randomUUID(),
+      type: ResponseTypes.MSG_DELETE,
+      payload: {
+        message: {
+          id: this.deletedMessageId,
+        },
+      },
+    };
+
+    WS.sendDeletedMessage(request);
+  }
+
+  private deleteMessage(data: MessageIsDeletedResponse | MessageDeleteResponse): void {
+    const history = stateStorage.getHistory();
+
+    const deletedMsg = history.filter(msg => msg.id === data.payload.message.id)[0];
+    if (deletedMsg) {
+      this.view.messagesHistory.removeChild(deletedMsg.view.getNode());
+    }
+    stateStorage.filterMessageHistory(data.payload.message.id);
   }
 }

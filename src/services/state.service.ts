@@ -75,6 +75,14 @@ export class StateService {
     this.history.push(msgController);
   }
 
+  public getHistory(): MessageController[] {
+    return this.history;
+  }
+
+  public filterMessageHistory(deletedId: string): void {
+    this.history = this.history.filter(MsgController => MsgController.id !== deletedId);
+  }
+
   public getUndeliveredMessages(): MessageController[] {
     const messages = this.history.filter(msgController => msgController.isDelivered === false);
     return messages;

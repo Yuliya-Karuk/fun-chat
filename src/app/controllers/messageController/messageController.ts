@@ -40,6 +40,7 @@ export class MessageController {
     eventBus.subscribe('MSGRead', (data: MessageIsReadedResponse) => this.setSendedMessageRead(data));
     eventBus.subscribe('MSGEdit', (data: MessageEditResponse) => this.setSendedMessageEdit(data));
     eventBus.subscribe('ReceivedMSGIsEdited', (data: MessageIsEditedResponse) => this.setReceivedMessageEdited(data));
+
     this.bindListeners();
   }
 
@@ -47,7 +48,7 @@ export class MessageController {
     if (this.isOwn) {
       this.view.getNode().addEventListener('click', () => this.handleShowContextMenu());
       this.view.editButton.addEventListener('click', () => this.handleEditing());
-      // this.view.deleteButton.addEventListener('click', () => this.handleEditing());
+      this.view.deleteButton.addEventListener('click', () => this.handleDeleting());
       document.addEventListener('click', (e: Event) => this.handleContextMenu(e));
     }
   }
@@ -66,6 +67,10 @@ export class MessageController {
 
   private handleEditing(): void {
     eventBus.emit('editMessage', { id: this.id, text: this.text });
+  }
+
+  private handleDeleting(): void {
+    eventBus.emit('deleteMessage', { id: this.id });
   }
 
   private setView(): void {
