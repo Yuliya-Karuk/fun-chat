@@ -28,6 +28,7 @@ export class AppController {
     this.reauthorizeUser();
 
     eventBus.subscribe('authorizeUser', () => this.handleAuthorization());
+    eventBus.subscribe('reauthorizeUser', () => this.reauthorizeUser());
   }
 
   private setModal(): void {

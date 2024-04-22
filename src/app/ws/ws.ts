@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
+import { ConnectionError } from '../../utils/constants';
 import { eventBus } from '../../utils/eventBus';
 import { AuthRequest } from '../model/auth';
 import {
@@ -13,16 +14,18 @@ import {
 import { UsersActiveRequest, UsersInactiveRequest } from '../model/users';
 
 export class WebSocketHandler {
+  private url: string = 'ws://127.0.0.1:4000';
   public ws: WebSocket;
 
   constructor() {
-    this.ws = new WebSocket('ws://127.0.0.1:4000');
+    this.ws = new WebSocket(this.url);
 
     this.bindSocketListeners();
   }
 
   private bindSocketListeners(): void {
     this.ws.addEventListener('message', (e: MessageEvent) => this.handleMessage(e));
+    this.ws.addEventListener('close', () => this.reconnect());
   }
 
   public sendAuthMessage(message: AuthRequest): void {
@@ -39,10 +42,9 @@ export class WebSocketHandler {
   public handleMessage(e: MessageEvent): void {
     const { data } = e;
     const response = JSON.parse(data);
-    // console.log(response);
 
     if (response.type === ResponseTypes.ERROR) {
-      eventBus.emit('authError', response.payload.error);
+      eventBus.emit('wsError', response);
     }
 
     if (response.type === ResponseTypes.USER_LOGIN) {
@@ -141,6 +143,21 @@ export class WebSocketHandler {
 
   public sendDeletedMessage(message: MessageDeleteRequest): void {
     this.ws.send(JSON.stringify(message));
+  }
+
+  private reconnect(): void {
+    eventBus.emit('connectionError', ConnectionError);
+    this.ws = new WebSocket(this.url);
+
+    window.setTimeout(() => {
+      if (this.ws.readyState === 3) {
+        this.reconnect();
+      }
+      if (this.ws.readyState === 1) {
+        this.bindSocketListeners();
+        eventBus.emit('reauthorizeUser');
+      }
+    }, 1000);
   }
 }
 

@@ -1,5 +1,6 @@
 import { Modal } from '../../../components/modal/modal';
 import { eventBus } from '../../../utils/eventBus';
+import { ErrorResponse } from '../../model/error';
 
 export class ModalController {
   public view: Modal;
@@ -10,7 +11,9 @@ export class ModalController {
 
     this.bindListeners();
 
-    eventBus.subscribe('authError', (data: string) => this.showErrorModal(data));
+    eventBus.subscribe('wsError', (data: ErrorResponse) => this.showErrorModal(data.payload.error));
+    eventBus.subscribe('connectionError', (data: string) => this.showErrorModal(data));
+    eventBus.subscribe('reauthorizeUser', () => this.view.hideModal());
   }
 
   private bindListeners(): void {

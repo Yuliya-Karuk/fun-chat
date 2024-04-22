@@ -49,3 +49,6 @@ export const AboutParagraphs = {
   2: 'But what if the service owner deletes your messages? Or, on the contrary, they can store your chat history without your consent!',
   3: 'Fun Chat is a simple, fast and secure messaging app that can be used on multiple devices simultaneously.',
 };
+
+export const ConnectionError =
+  'The connection to the server was suddenly lost. We are trying to reconnect, wait a moment, please';

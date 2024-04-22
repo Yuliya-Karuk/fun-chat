@@ -34,7 +34,7 @@ export class DialogController {
     eventBus.subscribe('receivedHistory', (data: MessageHistoryResponse) => this.renderHistoryMessage(data));
     eventBus.subscribe('changeMessagesDelivered', (data: ContactAuthResponse) => this.setMessageDelivered(data));
     eventBus.subscribe('ReceivedMSGIsRead', () => this.view.removeDelimiter());
-    eventBus.subscribe('goToLoginPage', () => this.clearPreviousUser());
+    eventBus.subscribe('goToChatPage', () => this.clearPreviousUser());
     eventBus.subscribe('editMessage', (data: MessageEdit) => this.handleMessageEditing(data));
     eventBus.subscribe('deleteMessage', (data: MessageDelete) => this.handleMessageDeleting(data));
     eventBus.subscribe('MSGDelete', (data: MessageDeleteResponse) => this.deleteMessage(data));
