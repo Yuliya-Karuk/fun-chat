@@ -1,4 +1,5 @@
 import { UserAuthResponse } from '../../app/model/auth';
+import { MessageReadResponse } from '../../app/model/message';
 import { MessageInput } from '../../utils/constants';
 import { createElementWithProperties } from '../../utils/utils';
 import { BaseComponent } from '../baseComponent';
@@ -135,8 +136,8 @@ export class ChatArea extends BaseComponent {
     }
   }
 
-  public removeDelimiter(): void {
-    if (this.messagesHistory.contains(this.delimiter)) {
+  public removeDelimiter(data: MessageReadResponse): void {
+    if (this.messagesHistory.contains(this.delimiter) && data.id) {
       this.messagesHistory.removeChild(this.delimiter);
       this.isDelimiterSet = false;
     }

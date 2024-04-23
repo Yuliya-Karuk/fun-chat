@@ -12,7 +12,6 @@ export class StateService {
   private history: MessageController[] = [];
 
   constructor() {
-    eventBus.subscribe('clearState', () => this.clearState());
     eventBus.subscribe('authorizeUser', (data: AuthResponse) => this.setChatOwner(data));
     eventBus.subscribe('chooseRecipient', (data: UserAuthResponse) => this.setChosenRecipient(data));
   }
@@ -88,16 +87,6 @@ export class StateService {
       msgController => msgController.isReaded === false && msgController.to === this.chatOwner
     );
     return messages;
-  }
-
-  public getMessageById(id: string): MessageController | undefined {
-    const message = this.history.find(msgController => msgController.id === id);
-    return message;
-  }
-
-  public readMessages(login: string): void {
-    const updatedUser = isNotNullable(this.users.find(contact => contact.login === login));
-    updatedUser.setUnreadMessages(0);
   }
 }
 

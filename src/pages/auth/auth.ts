@@ -16,7 +16,7 @@ export class Auth {
   constructor() {
     this.view = new AuthView();
 
-    eventBus.subscribe('saveUserData', () => this.saveUserData());
+    eventBus.subscribe('authorizeUser', () => this.saveUserData());
 
     this.renderStaticParts();
   }
@@ -68,11 +68,14 @@ export class Auth {
       },
     };
 
-    WS.sendAuthMessage(this.request);
+    WS.sendRequest(this.request);
   }
 
   private saveUserData(): void {
-    StorageService.saveData(this.request.payload.user);
+    if (!StorageService.isSavedUser()) {
+      StorageService.saveData(this.request.payload.user);
+    }
+
     this.view.clearInputs();
   }
 }

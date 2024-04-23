@@ -40,8 +40,8 @@ export class ContactsController {
       payload: null,
     };
 
-    WS.getActiveUsers(requestActiveUsers);
-    WS.getInactiveUsers(requestInactiveUsers);
+    WS.sendRequest(requestActiveUsers);
+    WS.sendRequest(requestInactiveUsers);
   }
 
   private getActiveUsers(activeUsersData: UsersActiveResponse): void {
@@ -73,7 +73,7 @@ export class ContactsController {
 
         const contact = new ContactController(el, request.id);
 
-        WS.getHistory(request);
+        WS.sendRequest(request);
         stateStorage.setOneRecipient(contact);
       }
     });
@@ -110,7 +110,7 @@ export class ContactsController {
 
       updatedUser = new ContactController(data.payload.user, request.id);
 
-      WS.getHistory(request);
+      WS.sendRequest(request);
       stateStorage.setOneRecipient(updatedUser);
     }
 

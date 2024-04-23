@@ -22,7 +22,7 @@
     "project": "./tsconfig.json"
   },
   "ignorePatterns": ["node_modules", "dist"],
-  // "noInlineConfig": true,
+  "noInlineConfig": true,
   "rules": {
     "no-debugger": "off",
     "no-console": ["warn", { "allow": ["warn", "error"] }],

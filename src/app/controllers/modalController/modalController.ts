@@ -11,7 +11,7 @@ export class ModalController {
 
     this.bindListeners();
 
-    eventBus.subscribe('wsError', (data: ErrorResponse) => this.showErrorModal(data.payload.error));
+    eventBus.subscribe('responseError', (data: ErrorResponse) => this.showErrorModal(data.payload.error));
     eventBus.subscribe('connectionError', (data: string) => this.showErrorModal(data));
     eventBus.subscribe('reauthorizeUser', () => this.view.hideModal());
   }

@@ -3,7 +3,6 @@ import { DialogController } from '../../app/controllers/dialogController/dialogC
 import { UserAuthRequest } from '../../app/model/auth';
 import { WS } from '../../app/ws/ws';
 import { router } from '../../router/router';
-import { Routes } from '../../router/router.types';
 import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { eventBus } from '../../utils/eventBus';
@@ -21,7 +20,6 @@ export class Chat {
     this.contactsController = new ContactsController();
 
     eventBus.subscribe('goToChatPage', (data: UserAuthRequest) => this.setUserData(data));
-    eventBus.subscribe('logoutUser', () => this.handleLogoutNavigation(Routes.Auth));
 
     this.renderStaticParts();
     this.bindListeners();
@@ -61,11 +59,6 @@ export class Chat {
       },
     };
 
-    WS.sendAuthMessage(request);
-    StorageService.removeUserData();
-  }
-
-  private handleLogoutNavigation(location: Routes): void {
-    router.navigateTo(location);
+    WS.sendRequest(request);
   }
 }

@@ -10,7 +10,7 @@ import {
   MessageDeleteResponse,
   MessageEdit,
   MessageHistoryResponse,
-  MessageIsDeletedResponse,
+  MessageReadResponse,
   MessageResponse,
 } from '../../model/message';
 import { WS } from '../../ws/ws';
@@ -28,19 +28,20 @@ export class DialogController {
 
     this.bindListeners();
 
-    eventBus.subscribe('chooseRecipient', (data: UserAuthResponse) => this.setChosenUser(data));
-    eventBus.subscribe('getSentMessage', (data: MessageResponse) => this.renderSentMessage(data));
-    eventBus.subscribe('getReceivedMessage', (data: MessageResponse) => this.renderReceivedMessage(data));
-    eventBus.subscribe('receivedHistory', (data: MessageHistoryResponse) => this.renderHistoryMessage(data));
-    eventBus.subscribe('changeMessagesDelivered', (data: ContactAuthResponse) => this.setMessageDelivered(data));
-    eventBus.subscribe('ReceivedMSGIsRead', () => this.view.removeDelimiter());
     eventBus.subscribe('goToChatPage', () => this.clearPreviousUser());
+    eventBus.subscribe('chooseRecipient', (data: UserAuthResponse) => this.setChosenUser(data));
+    eventBus.subscribe('receivedHistory', (data: MessageHistoryResponse) => this.renderHistoryMessage(data));
+    eventBus.subscribe('logoutUser', () => this.view.disableMessageForm());
+
+    eventBus.subscribe('changeMessagesDelivered', (data: ContactAuthResponse) => this.setMessageDelivered(data));
+    eventBus.subscribe('changeActivityUsers', (data: ContactAuthResponse) => this.changeActivityChosenUser(data));
+
     eventBus.subscribe('editMessage', (data: MessageEdit) => this.handleMessageEditing(data));
     eventBus.subscribe('deleteMessage', (data: MessageDelete) => this.handleMessageDeleting(data));
-    eventBus.subscribe('MSGDelete', (data: MessageDeleteResponse) => this.deleteMessage(data));
-    eventBus.subscribe('ReceivedMSGIsDeleted', (data: MessageIsDeletedResponse) => this.deleteMessage(data));
-    eventBus.subscribe('changeActivityUsers', (data: ContactAuthResponse) => this.changeActivityChosenUser(data));
-    eventBus.subscribe('logoutUser', () => this.view.disableMessageForm());
+
+    eventBus.subscribe('setSentMessage', (data: MessageResponse) => this.renderMessage(data));
+    eventBus.subscribe('setMessageRead', (data: MessageReadResponse) => this.view.removeDelimiter(data));
+    eventBus.subscribe('setMessageDeleted', (data: MessageDeleteResponse) => this.deleteMessage(data));
   }
 
   private clearPreviousUser(): void {
@@ -78,7 +79,7 @@ export class DialogController {
       },
     };
 
-    WS.getHistory(request);
+    WS.sendRequest(request);
   }
 
   private sendMessageToUser(e: Event): void {
@@ -107,7 +108,7 @@ export class DialogController {
       },
     };
 
-    WS.sendUserMessage(request);
+    WS.sendRequest(request);
   }
 
   private sendEditedMessage(message: string): void {
@@ -122,25 +123,26 @@ export class DialogController {
       },
     };
 
-    WS.sendEditedMessage(request);
+    WS.sendRequest(request);
   }
 
-  private renderSentMessage(data: MessageResponse): void {
-    const newMsg = new MessageController(data.payload.message, true);
+  private createMessage(messageData: Message, isOwn: boolean): void {
+    const newMsg = new MessageController(messageData, isOwn);
 
     stateStorage.pushMessageToHistory(newMsg);
     this.view.renderNewMessage(newMsg.view.getNode());
   }
 
-  private renderReceivedMessage(data: MessageResponse): void {
-    const chosenUser = stateStorage.getChosenRecipient();
+  private renderMessage(data: MessageResponse): void {
+    if (data.id !== null) {
+      this.createMessage(data.payload.message, true);
+    } else {
+      const chosenUser = stateStorage.getChosenRecipient();
 
-    if (chosenUser && data.payload.message.from === chosenUser) {
-      this.view.setDelimiter();
-      const newMsg = new MessageController(data.payload.message, false);
-
-      stateStorage.pushMessageToHistory(newMsg);
-      this.view.renderNewMessage(newMsg.view.getNode());
+      if (chosenUser && data.payload.message.from === chosenUser) {
+        this.view.setDelimiter();
+        this.createMessage(data.payload.message, false);
+      }
     }
   }
 
@@ -189,7 +191,7 @@ export class DialogController {
         },
       };
 
-      WS.sendMessageRead(request);
+      WS.sendRequest(request);
     });
 
     eventBus.emit('resetUnreadMessages', stateStorage.getChosenRecipient());
@@ -217,10 +219,10 @@ export class DialogController {
       },
     };
 
-    WS.sendDeletedMessage(request);
+    WS.sendRequest(request);
   }
 
-  private deleteMessage(data: MessageIsDeletedResponse | MessageDeleteResponse): void {
+  private deleteMessage(data: MessageDeleteResponse): void {
     const history = stateStorage.getHistory();
 
     const deletedMsg = history.filter(msg => msg.id === data.payload.message.id)[0];

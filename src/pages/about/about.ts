@@ -1,6 +1,7 @@
-import { router } from '../../router/router';
+import { WS } from '../../app/ws/ws';
 import { StorageService } from '../../services/storage.service';
-import { checkEventTarget } from '../../utils/utils';
+import { ResponseTypes } from '../../types/enums';
+import { isNotNullable } from '../../utils/utils';
 import { AboutView } from './aboutView';
 
 export class About {
@@ -14,7 +15,7 @@ export class About {
   }
 
   private bindListeners(): void {
-    this.view.header.logoutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e, true));
+    this.view.header.logoutLink.addEventListener('click', (e: Event) => this.handleHeaderNavigation(e));
   }
 
   private renderStaticParts(): void {
@@ -25,14 +26,16 @@ export class About {
     this.view.setHeaderLinks(isLoginedUser);
   }
 
-  private handleHeaderNavigation(e: Event, needToLogout: boolean): void {
+  private handleHeaderNavigation(e: Event): void {
     e.preventDefault();
+    const request = {
+      id: crypto.randomUUID(),
+      type: ResponseTypes.USER_LOGOUT,
+      payload: {
+        user: isNotNullable(StorageService.getUserData()),
+      },
+    };
 
-    if (needToLogout) {
-      StorageService.removeUserData();
-    }
-
-    const location = checkEventTarget(e.target).getAttribute('href') || '';
-    router.navigateTo(location);
+    WS.sendRequest(request);
   }
 }

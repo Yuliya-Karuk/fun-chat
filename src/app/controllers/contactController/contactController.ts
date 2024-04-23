@@ -16,7 +16,7 @@ export class ContactController {
     this.historyRequestId = historyRequestId;
 
     eventBus.subscribe('receivedHistory', (data: MessageHistoryResponse) => this.countUnreadMessage(data));
-    eventBus.subscribe('getReceivedMessage', (data: MessageResponse) => this.changeUnreadMessage(data));
+    eventBus.subscribe('setSentMessage', (data: MessageResponse) => this.changeUnreadMessage(data));
     eventBus.subscribe('resetUnreadMessages', (user: string) => this.resetUnreadMessage(user));
 
     this.view.getNode().addEventListener('click', () => eventBus.emit('chooseRecipient', userData));
@@ -46,7 +46,7 @@ export class ContactController {
   }
 
   private changeUnreadMessage(data: MessageResponse): void {
-    if (data.payload.message.from === this.login) {
+    if (data.payload.message.from === this.login && data.id === null) {
       this.setUnreadMessages();
     }
   }

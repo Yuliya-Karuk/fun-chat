@@ -1,8 +1,7 @@
-/* eslint-disable max-lines-per-function */
-import { StorageService } from '../../services/storage.service';
 import { ResponseTypes } from '../../types/enums';
 import { ConnectionError } from '../../utils/constants';
 import { eventBus } from '../../utils/eventBus';
+import { checkResponseType } from '../../utils/utils';
 import { AuthRequest } from '../model/auth';
 import {
   MessageDeleteRequest,
@@ -12,6 +11,32 @@ import {
   MessageRequest,
 } from '../model/message';
 import { UsersActiveRequest, UsersInactiveRequest } from '../model/users';
+
+type WebSocketRequest =
+  | AuthRequest
+  | UsersActiveRequest
+  | UsersInactiveRequest
+  | MessageRequest
+  | MessageHistoryRequest
+  | MessageReadRequest
+  | MessageEditRequest
+  | MessageDeleteRequest;
+
+const WebSocketEvent = {
+  [ResponseTypes.ERROR]: ['responseError'],
+  [ResponseTypes.USER_LOGIN]: ['authorizeUser'],
+  [ResponseTypes.USER_LOGOUT]: ['logoutUser'],
+  [ResponseTypes.USER_ACTIVE]: ['receivedActiveUsers'],
+  [ResponseTypes.USER_INACTIVE]: ['receivedInactiveUsers'],
+  [ResponseTypes.USER_EXTERNAL_LOGIN]: ['changeActivityUsers', 'changeMessagesDelivered'],
+  [ResponseTypes.USER_EXTERNAL_LOGOUT]: ['changeActivityUsers'],
+  [ResponseTypes.MSG_SEND]: ['setSentMessage'],
+  [ResponseTypes.MSG_FROM_USER]: ['receivedHistory'],
+  [ResponseTypes.MSG_DELIVER]: ['MSGDelivered'],
+  [ResponseTypes.MSG_READ]: ['setMessageRead'],
+  [ResponseTypes.MSG_EDIT]: ['setMessageEdited'],
+  [ResponseTypes.MSG_DELETE]: ['setMessageDeleted'],
+};
 
 export class WebSocketHandler {
   private url: string = 'ws://127.0.0.1:4000';
@@ -28,121 +53,22 @@ export class WebSocketHandler {
     this.ws.addEventListener('close', () => this.reconnect());
   }
 
-  public sendAuthMessage(message: AuthRequest): void {
-    if (this.ws.readyState === 0) {
-      this.ws.addEventListener('open', () => {
-        this.ws.send(JSON.stringify(message));
-      });
-    } else {
-      this.ws.send(JSON.stringify(message));
-    }
-  }
-
-  // сделать нормальный маппинг по массиву!!!!!
   public handleMessage(e: MessageEvent): void {
     const { data } = e;
     const response = JSON.parse(data);
 
-    if (response.type === ResponseTypes.ERROR) {
-      eventBus.emit('wsError', response);
-    }
-
-    if (response.type === ResponseTypes.USER_LOGIN) {
-      if (!StorageService.isSavedUser()) {
-        eventBus.emit('saveUserData', response);
-        eventBus.emit('clearState', response);
-      }
-
-      eventBus.emit('authorizeUser', response);
-    }
-
-    if (response.type === ResponseTypes.USER_LOGOUT) {
-      eventBus.emit('logoutUser', response);
-    }
-
-    if (response.type === ResponseTypes.USER_ACTIVE) {
-      eventBus.emit('receivedActiveUsers', response);
-    }
-
-    if (response.type === ResponseTypes.USER_INACTIVE) {
-      eventBus.emit('receivedInactiveUsers', response);
-    }
-
-    if (response.type === ResponseTypes.USER_EXTERNAL_LOGIN || response.type === ResponseTypes.USER_EXTERNAL_LOGOUT) {
-      eventBus.emit('changeActivityUsers', response);
-    }
-
-    if (response.type === ResponseTypes.USER_EXTERNAL_LOGIN) {
-      eventBus.emit('changeMessagesDelivered', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_SEND && response.id !== null) {
-      eventBus.emit('getSentMessage', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_SEND && response.id === null) {
-      eventBus.emit('getReceivedMessage', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_FROM_USER) {
-      eventBus.emit('receivedHistory', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_DELIVER) {
-      eventBus.emit('MSGDelivered', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_READ && response.id !== null) {
-      eventBus.emit('ReceivedMSGIsRead', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_READ && response.id === null) {
-      eventBus.emit('MSGRead', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_EDIT && response.id !== null) {
-      eventBus.emit('MSGEdit', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_EDIT && response.id === null) {
-      eventBus.emit('ReceivedMSGIsEdited', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_DELETE && response.id !== null) {
-      eventBus.emit('MSGDelete', response);
-    }
-
-    if (response.type === ResponseTypes.MSG_DELETE && response.id === null) {
-      eventBus.emit('ReceivedMSGIsDeleted', response);
-    }
+    const events = WebSocketEvent[checkResponseType(response.type)];
+    events.forEach(event => eventBus.emit(event, response));
   }
 
-  public getActiveUsers(message: UsersActiveRequest): void {
-    this.ws.send(JSON.stringify(message));
-  }
-
-  public getInactiveUsers(message: UsersInactiveRequest): void {
-    this.ws.send(JSON.stringify(message));
-  }
-
-  public sendUserMessage(message: MessageRequest): void {
-    this.ws.send(JSON.stringify(message));
-  }
-
-  public getHistory(message: MessageHistoryRequest): void {
-    this.ws.send(JSON.stringify(message));
-  }
-
-  public sendMessageRead(message: MessageReadRequest): void {
-    this.ws.send(JSON.stringify(message));
-  }
-
-  public sendEditedMessage(message: MessageEditRequest): void {
-    this.ws.send(JSON.stringify(message));
-  }
-
-  public sendDeletedMessage(message: MessageDeleteRequest): void {
-    this.ws.send(JSON.stringify(message));
+  public sendRequest(request: WebSocketRequest): void {
+    if (this.ws.readyState === 0) {
+      this.ws.addEventListener('open', () => {
+        this.ws.send(JSON.stringify(request));
+      });
+    } else {
+      this.ws.send(JSON.stringify(request));
+    }
   }
 
   private reconnect(): void {

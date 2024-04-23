@@ -29,6 +29,7 @@ export class AppController {
 
     eventBus.subscribe('authorizeUser', () => this.handleAuthorization());
     eventBus.subscribe('reauthorizeUser', () => this.reauthorizeUser());
+    eventBus.subscribe('logoutUser', () => this.logoutUser());
   }
 
   private setModal(): void {
@@ -45,7 +46,7 @@ export class AppController {
         },
       };
 
-      WS.sendAuthMessage(request);
+      WS.sendRequest(request);
     }
   }
 
@@ -79,5 +80,11 @@ export class AppController {
       router.navigateTo(Routes.Chat);
       eventBus.emit('goToChatPage', StorageService.getUserData());
     }
+  }
+
+  private logoutUser(): void {
+    StorageService.removeUserData();
+
+    router.navigateTo(Routes.Auth);
   }
 }

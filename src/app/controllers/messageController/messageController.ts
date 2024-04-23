@@ -1,13 +1,7 @@
 import { MessageView } from '../../../components/message/message';
 import { eventBus } from '../../../utils/eventBus';
 import { checkEventTarget, prepareDateFormat } from '../../../utils/utils';
-import {
-  Message,
-  MessageEditResponse,
-  MessageIsEditedResponse,
-  MessageIsReadedResponse,
-  MessageReadResponse,
-} from '../../model/message';
+import { Message, MessageEditResponse, MessageReadResponse } from '../../model/message';
 
 export class MessageController {
   public view: MessageView = new MessageView();
@@ -35,11 +29,8 @@ export class MessageController {
 
     this.setView();
 
-    eventBus.subscribe('deliverMessage', () => this.setMessageDelivered());
-    eventBus.subscribe('ReceivedMSGIsRead', (data: MessageReadResponse) => this.setReceivedMessageRead(data));
-    eventBus.subscribe('MSGRead', (data: MessageIsReadedResponse) => this.setSendedMessageRead(data));
-    eventBus.subscribe('MSGEdit', (data: MessageEditResponse) => this.setSendedMessageEdit(data));
-    eventBus.subscribe('ReceivedMSGIsEdited', (data: MessageIsEditedResponse) => this.setReceivedMessageEdited(data));
+    eventBus.subscribe('setMessageRead', (data: MessageReadResponse) => this.setMessageRead(data));
+    eventBus.subscribe('setMessageEdited', (data: MessageEditResponse) => this.setMessageEdited(data));
 
     this.bindListeners();
   }
@@ -83,30 +74,15 @@ export class MessageController {
     this.view.setDeliveredStatus();
   }
 
-  public setSendedMessageRead(data: MessageIsReadedResponse): void {
+  public setMessageRead(data: MessageReadResponse): void {
     if (data.payload.message.id === this.id) {
       this.isReaded = true;
       this.view.setReadStatus();
     }
   }
 
-  public setReceivedMessageRead(data: MessageReadResponse): void {
-    if (data.payload.message.id === this.id && !this.isOwn) {
-      this.isReaded = true;
-    }
-  }
-
-  private setSendedMessageEdit(data: MessageEditResponse): void {
+  private setMessageEdited(data: MessageEditResponse): void {
     if (data.payload.message.id === this.id) {
-      this.isEdited = data.payload.message.status.isEdited;
-      this.text = data.payload.message.text;
-      this.view.setEditedMessage(this.isEdited, this.text);
-    }
-  }
-
-  // дублирование
-  private setReceivedMessageEdited(data: MessageIsEditedResponse): void {
-    if (data.payload.message.id === this.id && !this.isOwn) {
       this.isEdited = data.payload.message.status.isEdited;
       this.text = data.payload.message.text;
       this.view.setEditedMessage(this.isEdited, this.text);

@@ -1,4 +1,5 @@
 import { Routes } from '../router/router.types';
+import { ResponseTypes } from '../types/enums';
 import { DomElementAttribute, DomElementProperties } from '../types/interfaces';
 
 export function isNotNullable<T>(value: T): NonNullable<T> {
@@ -81,4 +82,12 @@ export function prepareDateFormat(timestamp: number): string {
 
   const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   return formattedDate;
+}
+
+export function checkResponseType(type: string): ResponseTypes {
+  if (Object.values(ResponseTypes).includes(type as ResponseTypes)) {
+    return type as ResponseTypes;
+  }
+
+  return ResponseTypes.ERROR;
 }

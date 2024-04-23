@@ -76,15 +76,7 @@ export type MessageRead = Pick<Message, 'id'> & {
 };
 
 export interface MessageReadResponse {
-  id: string;
-  type: ResponseTypes;
-  payload: {
-    message: MessageRead;
-  };
-}
-
-export interface MessageIsReadedResponse {
-  id: null;
+  id: string | null;
   type: ResponseTypes;
   payload: {
     message: MessageRead;
@@ -105,15 +97,7 @@ export interface MessageEditRequest {
 }
 
 export interface MessageEditResponse {
-  id: string;
-  type: ResponseTypes;
-  payload: {
-    message: MessageEdited;
-  };
-}
-
-export interface MessageIsEditedResponse {
-  id: null;
+  id: string | null;
   type: ResponseTypes;
   payload: {
     message: MessageEdited;
@@ -134,15 +118,7 @@ export interface MessageDeleteRequest {
 }
 
 export interface MessageDeleteResponse {
-  id: string;
-  type: ResponseTypes;
-  payload: {
-    message: MessageDeleted;
-  };
-}
-
-export interface MessageIsDeletedResponse {
-  id: null;
+  id: string | null;
   type: ResponseTypes;
   payload: {
     message: MessageDeleted;
