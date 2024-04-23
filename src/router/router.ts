@@ -21,6 +21,7 @@ export class Router {
   }
 
   public navigateTo(location: string): void {
+    this.currentPage = checkRoute(location);
     window.history.pushState({}, '', location);
     this.setPage(location);
   }

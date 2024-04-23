@@ -46,8 +46,8 @@ export const MessageInput = {
 export const AboutParagraphs = {
   0: 'Welcome to Fun Chat',
   1: 'What could be better than chatting with your friends using a chat app?',
-  2: 'But what if the service owner deletes your messages? Or, on the contrary, they can store your chat history without your consent!',
-  3: 'Fun Chat is a simple, fast and secure messaging app that can be used on multiple devices simultaneously.',
+  2: 'Fun Chat is a simple, fast and secure messaging app that can be used on multiple devices simultaneously.',
+  3: 'Made by Yuliya Karuk, beginner enthusiastic front-end developer, in 2024.',
 };
 
 export const ConnectionError =

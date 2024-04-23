@@ -11,8 +11,12 @@
   @include flex(space-between, center);
   @include font(2rem, 900, 1.05);
 
-  @include media-mobile {
+  @include media-tablet-mini {
     font-size: 1.4rem;
+  }
+
+  @include media-tablet-mini {
+    font-size: 1.2rem;
   }
   height: 100%;
   padding: 0 20px;
@@ -36,14 +40,26 @@
 }
 
 .footer-img-github {
+
+  @include media-tablet-mini {
+    width: 20px;
+    height: 20px;
+  }
   display: block;
   width: 30px;
   height: 30px;
   background: center no-repeat url('../../img/github.svg');
+  background-size: contain;
 }
 
 .footer-img-rs {
+
+  @include media-tablet-mini {
+    width: 60px;
+    height: 21px;
+  }
   width: 86px;
   height: 32px;
   background: center no-repeat url('../../img/rs.svg');
+  background-size: contain;
 }

@@ -21,7 +21,7 @@ export class Chat {
     this.contactsController = new ContactsController();
 
     eventBus.subscribe('goToChatPage', (data: UserAuthRequest) => this.setUserData(data));
-    eventBus.subscribe('goToLoginPage', () => this.handleLogoutNavigation(Routes.Auth));
+    eventBus.subscribe('logoutUser', () => this.handleLogoutNavigation(Routes.Auth));
 
     this.renderStaticParts();
     this.bindListeners();

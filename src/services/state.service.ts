@@ -17,8 +17,9 @@ export class StateService {
     eventBus.subscribe('chooseRecipient', (data: UserAuthResponse) => this.setChosenRecipient(data));
   }
 
-  private clearState(): void {
-    this.clearUsers();
+  public clearState(): void {
+    this.users = [];
+    this.recipientsData = [];
     this.chosenRecipient = null;
   }
 
@@ -28,11 +29,6 @@ export class StateService {
 
   public getChatOwner(): string {
     return this.chatOwner;
-  }
-
-  public clearUsers(): void {
-    this.users = [];
-    this.recipientsData = [];
   }
 
   public setRecipientData(users: UserAuthResponse[], isInactive: boolean): void {

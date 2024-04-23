@@ -2,7 +2,7 @@
   background: var(--color-bg-primary);
 
   .main {
-    @include media-tablet-mini {
+    @include media-tablet {
       padding: 10px;
     }
   }

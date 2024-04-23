@@ -23,7 +23,8 @@ export class ContactController {
     this.view.setUserActivity(this.login, this.isLogined);
   }
 
-  public updateUserVisibility(): void {
+  public updateUserVisibility(data: UserAuthResponse): void {
+    this.isLogined = data.isLogined;
     this.view.setUserActivity(this.login, this.isLogined);
   }
 

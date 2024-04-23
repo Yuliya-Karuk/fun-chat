@@ -39,10 +39,13 @@ export class DialogController {
     eventBus.subscribe('deleteMessage', (data: MessageDelete) => this.handleMessageDeleting(data));
     eventBus.subscribe('MSGDelete', (data: MessageDeleteResponse) => this.deleteMessage(data));
     eventBus.subscribe('ReceivedMSGIsDeleted', (data: MessageIsDeletedResponse) => this.deleteMessage(data));
+    eventBus.subscribe('changeActivityUsers', (data: ContactAuthResponse) => this.changeActivityChosenUser(data));
+    eventBus.subscribe('logoutUser', () => this.view.disableMessageForm());
   }
 
   private clearPreviousUser(): void {
     this.view.clearPreviousUser();
+    stateStorage.clearState();
   }
 
   private bindListeners(): void {
@@ -225,5 +228,11 @@ export class DialogController {
       this.view.messagesHistory.removeChild(deletedMsg.view.getNode());
     }
     stateStorage.filterMessageHistory(data.payload.message.id);
+  }
+
+  private changeActivityChosenUser(data: ContactAuthResponse): void {
+    if (data.payload.user.login === stateStorage.getChosenRecipient()) {
+      this.view.setUser(data.payload.user);
+    }
   }
 }

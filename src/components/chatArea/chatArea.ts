@@ -68,6 +68,11 @@ export class ChatArea extends BaseComponent {
 
   public enableMessageInput(): void {
     this.messageInput.removeAttribute('disabled');
+    this.clearMessageInput();
+  }
+
+  public clearMessageInput(): void {
+    this.messageInput.value = '';
   }
 
   public enableMessageButton(): void {
@@ -80,7 +85,7 @@ export class ChatArea extends BaseComponent {
 
   public getMessageInputValue(): string {
     const message = this.messageInput.value;
-    this.messageInput.value = '';
+    this.clearMessageInput();
     return message;
   }
 
@@ -139,5 +144,10 @@ export class ChatArea extends BaseComponent {
 
   public setMessageInputValue(text: string): void {
     this.messageInput.value = text;
+  }
+
+  public disableMessageForm(): void {
+    this.messageInput.setAttribute('disabled', 'disabled');
+    this.messageButton.setAttribute('disabled', 'disabled');
   }
 }

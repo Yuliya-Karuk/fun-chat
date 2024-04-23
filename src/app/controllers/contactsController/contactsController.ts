@@ -18,7 +18,7 @@ export class ContactsController {
     eventBus.subscribe('receivedInactiveUsers', (data: UsersInactiveResponse) => this.getInactiveUsers(data));
     eventBus.subscribe('receivedAllUser', (data: UserAuthResponse[]) => this.createContacts(data));
     eventBus.subscribe('changeActivityUsers', (data: ContactAuthResponse) => this.changeActivityUsers(data));
-    eventBus.subscribe('goToLoginPage', () => this.clearPreviousUser());
+    eventBus.subscribe('logoutUser', () => this.clearPreviousUser());
 
     this.bindListeners();
   }
@@ -45,7 +45,7 @@ export class ContactsController {
   }
 
   private getActiveUsers(activeUsersData: UsersActiveResponse): void {
-    stateStorage.clearUsers();
+    stateStorage.clearState();
 
     const { users } = activeUsersData.payload;
 
@@ -95,7 +95,7 @@ export class ContactsController {
     if (stateStorage.checkUserIsExist(data.payload.user)) {
       updatedUser = stateStorage.updateOneUser(data.payload.user);
 
-      updatedUser.updateUserVisibility();
+      updatedUser.updateUserVisibility(data.payload.user);
       this.view.contacts.removeChild(updatedUser.view.getNode());
     } else {
       const request = {

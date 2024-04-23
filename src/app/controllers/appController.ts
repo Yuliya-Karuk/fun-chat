@@ -56,7 +56,12 @@ export class AppController {
 
     const isSavedUser = StorageService.isSavedUser();
 
-    if ((location === Routes.Auth && !isSavedUser) || (location === Routes.Chat && !isSavedUser)) {
+    if (location === Routes.Chat && !isSavedUser) {
+      router.navigateTo(Routes.Auth);
+      return;
+    }
+
+    if (location === Routes.Auth && !isSavedUser) {
       this.page = this.auth;
     } else if (location === Routes.About) {
       this.page = this.about;

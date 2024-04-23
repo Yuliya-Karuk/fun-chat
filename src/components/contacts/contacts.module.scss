@@ -1,16 +1,16 @@
 .contacts-container {
   @include flex(flex-start, center, column);
 
-  @include media-tablet {
-    width: 33%;
+  @include media-laptop {
+    width: 35%;
   }
 
-  @include media-mobile {
+  @include media-tablet-mini {
     gap: 0;
   }
   row-gap: 10px;
   align-self: stretch;
-  width: 25%;
+  width: 30%;
   padding-right: 5px;
   border-right: 1px solid white;
 }
@@ -18,8 +18,12 @@
 .contacts {
   @include flex(flex-start, center, column);
 
-  @include media-tablet-mini {
+  @include media-tablet {
     height: calc(100vh - 190px);
+  }
+
+  @include media-tablet-mini {
+    gap: 0;
   }
   overflow-y: auto;
   row-gap: 5px;

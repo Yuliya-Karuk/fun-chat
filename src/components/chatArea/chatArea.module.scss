@@ -1,11 +1,11 @@
 .chat-area {
   @include flex(flex-start, center, column);
 
-  @include media-tablet {
-    width: 67%;
+  @include media-laptop {
+    width: 65%;
   }
   gap: 10px;
-  width: 75%;
+  width: 70%;
   padding: 5px;
 }
 
@@ -36,6 +36,10 @@
 
 .selected-login {
   @include font(1.6rem, 700, 1.05);
+
+  @include media-tablet-mini {
+    font-size: 1.2rem;
+  }
   overflow: hidden;
   color: var(--color-font-light-secondary);
   text-overflow: ellipsis;
@@ -44,7 +48,7 @@
 .messages-area {
   @include flex(center, center, column);
 
-  @include media-tablet-mini {
+  @include media-tablet {
     height: calc(100vh - 250px);
   }
   width: 100%;
@@ -66,7 +70,7 @@
 .start-message {
   @include font(3rem, 700, normal, -0.02em);
 
-  @include media-tablet {
+  @include media-laptop {
     font-size: 2.4rem;
   }
 
@@ -106,7 +110,7 @@
 .start-history {
   @include font(3rem, 700, normal, -0.02em);
 
-  @include media-tablet {
+  @include media-laptop {
     font-size: 2.4rem;
   }
 
