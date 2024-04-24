@@ -112,7 +112,7 @@ export class ChatArea extends BaseComponent {
       this.messagesHistory.removeChild(this.startHistory);
     }
 
-    this.messagesHistory.append(msg);
+    this.messagesHistory.prepend(msg);
 
     if (!this.isDelimiterSet) {
       msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -131,9 +131,8 @@ export class ChatArea extends BaseComponent {
 
   public setDelimiter(): void {
     if (!this.isDelimiterSet) {
-      this.messagesHistory.append(this.delimiter);
+      this.messagesHistory.prepend(this.delimiter);
       this.isDelimiterSet = true;
-      this.delimiter.scrollIntoView(true);
     }
   }
 

@@ -13,6 +13,7 @@
     "no-descending-specificity": null,
     "scss/at-import-partial-extension": "always",
     "custom-property-empty-line-before": "never",
-    "declaration-empty-line-before": "never"
+    "declaration-empty-line-before": "never",
+    "media-feature-range-notation": "prefix"
   }
 }

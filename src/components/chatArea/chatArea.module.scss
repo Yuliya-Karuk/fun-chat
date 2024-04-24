@@ -81,7 +81,7 @@
 }
 
 .messages-history {
-  @include flex(flex-start, center, column);
+  @include flex(flex-start, center, column-reverse);
   overflow-y: auto;
   gap: 10px;
   align-self: stretch;
