@@ -209,17 +209,20 @@ export class DialogController {
 
   private handleMessageDeleting(data: MessageDelete): void {
     this.deletedMessageId = data.id;
-    const request = {
-      id: crypto.randomUUID(),
-      type: ResponseTypes.MSG_DELETE,
-      payload: {
-        message: {
-          id: this.deletedMessageId,
-        },
-      },
-    };
 
-    WS.sendRequest(request);
+    if (this.deletedMessageId !== this.editedMessageId) {
+      const request = {
+        id: crypto.randomUUID(),
+        type: ResponseTypes.MSG_DELETE,
+        payload: {
+          message: {
+            id: this.deletedMessageId,
+          },
+        },
+      };
+
+      WS.sendRequest(request);
+    }
   }
 
   private deleteMessage(data: MessageDeleteResponse): void {

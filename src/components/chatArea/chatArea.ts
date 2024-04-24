@@ -14,6 +14,7 @@ export class ChatArea extends BaseComponent {
   public messageButton: HTMLButtonElement;
   public messagesHistory: HTMLDivElement;
   private startHistory: HTMLDivElement;
+
   private delimiter: HTMLDivElement;
   private isDelimiterSet: boolean = false;
 
@@ -145,6 +146,7 @@ export class ChatArea extends BaseComponent {
 
   public setMessageInputValue(text: string): void {
     this.messageInput.value = text;
+    this.messageInput.focus();
   }
 
   public disableMessageForm(): void {

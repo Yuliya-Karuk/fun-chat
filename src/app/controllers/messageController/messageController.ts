@@ -37,31 +37,39 @@ export class MessageController {
 
   private bindListeners(): void {
     if (this.isOwn) {
-      this.view.getNode().addEventListener('click', () => this.handleShowContextMenu());
+      this.view.getNode().addEventListener('click', (e: Event) => this.handleShowContextMenu(e));
       this.view.editButton.addEventListener('click', () => this.handleEditing());
       this.view.deleteButton.addEventListener('click', () => this.handleDeleting());
       document.addEventListener('click', (e: Event) => this.handleContextMenu(e));
     }
   }
 
-  private handleShowContextMenu(): void {
-    this.view.showContextMenu();
-    this.contextMenuIsShown = true;
+  private handleShowContextMenu(e: Event): void {
+    if (e.target !== this.view.editButton && e.target !== this.view.deleteButton) {
+      this.view.showContextMenu();
+      this.contextMenuIsShown = true;
+    }
+  }
+
+  private handleHideContextMenu(): void {
+    this.view.hideContextMenu();
+    this.contextMenuIsShown = false;
   }
 
   private handleContextMenu(e: Event): void {
     if (!this.view.getNode().contains(checkEventTarget(e.target)) && this.contextMenuIsShown) {
-      this.view.hideContextMenu();
-      this.contextMenuIsShown = false;
+      this.handleHideContextMenu();
     }
   }
 
   private handleEditing(): void {
     eventBus.emit('editMessage', { id: this.id, text: this.text });
+    this.handleHideContextMenu();
   }
 
   private handleDeleting(): void {
     eventBus.emit('deleteMessage', { id: this.id });
+    this.handleHideContextMenu();
   }
 
   private setView(): void {
