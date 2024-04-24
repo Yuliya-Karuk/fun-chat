@@ -37,7 +37,7 @@ export class MessageController {
 
   private bindListeners(): void {
     if (this.isOwn) {
-      this.view.getNode().addEventListener('click', (e: Event) => this.handleShowContextMenu(e));
+      this.view.getNode().addEventListener('contextmenu', (e: Event) => this.handleShowContextMenu(e));
       this.view.editButton.addEventListener('click', () => this.handleEditing());
       this.view.deleteButton.addEventListener('click', () => this.handleDeleting());
       document.addEventListener('click', (e: Event) => this.handleContextMenu(e));
@@ -45,6 +45,7 @@ export class MessageController {
   }
 
   private handleShowContextMenu(e: Event): void {
+    e.preventDefault();
     if (e.target !== this.view.editButton && e.target !== this.view.deleteButton) {
       this.view.showContextMenu();
       this.contextMenuIsShown = true;
