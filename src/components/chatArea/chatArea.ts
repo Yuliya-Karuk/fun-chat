@@ -88,6 +88,7 @@ export class ChatArea extends BaseComponent {
   public getMessageInputValue(): string {
     const message = this.messageInput.value;
     this.clearMessageInput();
+    this.disableMessageButton();
     return message;
   }
 

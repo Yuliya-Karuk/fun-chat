@@ -49,6 +49,7 @@ export class WebSocketHandler {
   }
 
   private bindSocketListeners(): void {
+    this.ws.addEventListener('open', () => eventBus.emit('reauthorizeUser'));
     this.ws.addEventListener('message', (e: MessageEvent) => this.handleMessage(e));
     this.ws.addEventListener('close', () => this.reconnect());
   }
@@ -71,19 +72,18 @@ export class WebSocketHandler {
     }
   }
 
-  private reconnect(): void {
+  private connect(): void {
     eventBus.emit('connectionError', ConnectionError);
-    this.ws = new WebSocket(this.url);
+    if (this.ws.readyState > 1) {
+      this.ws = new WebSocket(this.url);
+      this.bindSocketListeners();
+    }
+  }
 
+  private reconnect(): void {
     window.setTimeout(() => {
-      if (this.ws.readyState === 3) {
-        this.reconnect();
-      }
-      if (this.ws.readyState === 1) {
-        this.bindSocketListeners();
-        eventBus.emit('reauthorizeUser');
-      }
-    }, 1000);
+      this.connect();
+    }, 2000);
   }
 }
 

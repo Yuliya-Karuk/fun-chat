@@ -25,7 +25,6 @@ export class AppController {
     this.chat = new Chat();
 
     this.setModal();
-    this.reauthorizeUser();
 
     eventBus.subscribe('authorizeUser', () => this.handleAuthorization());
     eventBus.subscribe('reauthorizeUser', () => this.reauthorizeUser());
