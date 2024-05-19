@@ -63,7 +63,7 @@ export class WebSocketHandler {
   }
 
   public sendRequest(request: WebSocketRequest): void {
-    if (this.ws.readyState === 0) {
+    if (this.ws.readyState === this.ws.CONNECTING) {
       this.ws.addEventListener('open', () => {
         this.ws.send(JSON.stringify(request));
       });
@@ -74,7 +74,7 @@ export class WebSocketHandler {
 
   private connect(): void {
     eventBus.emit('connectionError', ConnectionError);
-    if (this.ws.readyState > 1) {
+    if (this.ws.readyState > this.ws.OPEN) {
       this.ws = new WebSocket(this.url);
       this.bindSocketListeners();
     }

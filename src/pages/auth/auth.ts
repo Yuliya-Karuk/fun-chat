@@ -42,6 +42,8 @@ export class Auth {
         this.handleAuthorization(e);
       }
     });
+
+    this.view.authForm.aboutLink.addEventListener('click', (e: Event) => this.handleNavigation(e));
   }
 
   private validateLoginInput(input: HTMLInputElement): void {
@@ -77,5 +79,10 @@ export class Auth {
     }
 
     this.view.clearInputs();
+  }
+
+  private handleNavigation(e: Event): void {
+    e.preventDefault();
+    router.navigateTo(Routes.About);
   }
 }

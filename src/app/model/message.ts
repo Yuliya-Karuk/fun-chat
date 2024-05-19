@@ -1,14 +1,6 @@
 import { ResponseTypes } from '../../types/enums';
 import { UserAuthData } from './auth';
 
-export interface MessageHistoryRequest {
-  id: string;
-  type: ResponseTypes;
-  payload: {
-    user: Pick<UserAuthData, 'login'>;
-  };
-}
-
 export interface MessageStatus {
   isDelivered: boolean;
   isReaded: boolean;
@@ -25,101 +17,108 @@ export interface Message {
   status: MessageStatus;
 }
 
+export type HistoryRequestUser = Pick<UserAuthData, 'login'>;
+
 export type MessageFromUser = Pick<Message, 'to' | 'text'>;
 
 export type MessageDelivered = Pick<Message, 'id'> & {
   status: Pick<MessageStatus, 'isDelivered'>;
 };
 
-export interface MessageHistoryResponse {
-  id: string;
-  type: ResponseTypes;
-  payload: {
-    messages: Message[] | [];
-  };
-}
-
-export interface MessageRequest {
-  id: string;
-  type: ResponseTypes;
-  payload: {
-    message: MessageFromUser;
-  };
-}
-
-export interface MessageResponse {
-  id: string | null;
-  type: ResponseTypes;
-  payload: {
-    message: Message;
-  };
-}
-
-export interface MessageDeliveredResponse {
-  id: null;
-  type: ResponseTypes;
-  payload: {
-    message: MessageDelivered;
-  };
-}
-
-export interface MessageReadRequest {
-  id: string;
-  type: ResponseTypes;
-  payload: {
-    message: Pick<Message, 'id'>;
-  };
-}
-
-export type MessageRead = Pick<Message, 'id'> & {
+export type MessageRead = Pick<Message, 'id'>;
+export type MessageIsRead = Pick<Message, 'id'> & {
   status: Pick<MessageStatus, 'isReaded'>;
 };
-
-export interface MessageReadResponse {
-  id: string | null;
-  type: ResponseTypes;
-  payload: {
-    message: MessageRead;
-  };
-}
 
 export type MessageEdit = Pick<Message, 'id' | 'text'>;
 export type MessageEdited = Pick<Message, 'id' | 'text'> & {
   status: Pick<MessageStatus, 'isEdited'>;
 };
 
-export interface MessageEditRequest {
-  id: string;
-  type: ResponseTypes;
-  payload: {
-    message: MessageEdit;
-  };
-}
-
-export interface MessageEditResponse {
-  id: string | null;
-  type: ResponseTypes;
-  payload: {
-    message: MessageEdited;
-  };
-}
-
 export type MessageDelete = Pick<Message, 'id'>;
 export type MessageDeleted = Pick<Message, 'id'> & {
   status: Pick<MessageStatus, 'isDeleted'>;
 };
 
-export interface MessageDeleteRequest {
+interface Response {
+  id: string | null;
+  type: ResponseTypes;
+  payload: {
+    message?: Message | MessageDelivered | MessageIsRead | MessageEdited | MessageDeleted;
+    messages?: Message[];
+  };
+}
+
+export interface Request {
   id: string;
   type: ResponseTypes;
+  payload: {
+    message?: MessageFromUser | MessageRead | MessageEdit | MessageDelete;
+    user?: HistoryRequestUser;
+  };
+}
+
+export interface MessageHistoryRequest extends Request {
+  payload: {
+    user: HistoryRequestUser;
+  };
+}
+
+export interface MessageHistoryResponse extends Response {
+  payload: {
+    messages: Message[] | [];
+  };
+}
+
+export interface MessageRequest extends Request {
+  payload: {
+    message: MessageFromUser;
+  };
+}
+
+export interface MessageResponse extends Response {
+  payload: {
+    message: Message;
+  };
+}
+
+export interface MessageDeliveredResponse extends Response {
+  payload: {
+    message: MessageDelivered;
+  };
+}
+
+export interface MessageReadRequest extends Request {
+  payload: {
+    message: MessageRead;
+  };
+}
+
+export interface MessageReadResponse extends Response {
+  payload: {
+    message: MessageIsRead;
+  };
+}
+
+export interface MessageEditRequest extends Request {
+  payload: {
+    message: MessageEdit;
+  };
+}
+
+export interface MessageEditResponse extends Response {
+  payload: {
+    message: MessageEdited;
+  };
+}
+
+export interface MessageDeleteRequest extends Request {
   payload: {
     message: MessageDelete;
   };
 }
 
-export interface MessageDeleteResponse {
-  id: string | null;
-  type: ResponseTypes;
+export interface MessageDeleteResponse extends Response {
   payload: {
     message: MessageDeleted;
   };

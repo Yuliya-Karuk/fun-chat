@@ -6,12 +6,12 @@ import { Message, MessageEditResponse, MessageReadResponse } from '../../model/m
 export class MessageController {
   public view: MessageView = new MessageView();
   public id: string;
-  private from: string;
-  public to: string;
-  private text: string;
-  private datetime: number;
   public isDelivered: boolean;
   public isReaded: boolean;
+  public to: string;
+  private from: string;
+  private text: string;
+  private datetime: number;
   private isEdited: boolean;
   private isOwn: boolean;
   private contextMenuIsShown: boolean = false;
